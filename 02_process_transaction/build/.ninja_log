@@ -1,0 +1,5 @@
+# ninja log v5
+7	885	6692682422008112	CMakeFiles/6_FinanceOverseer.dir/src/process_transaction.cpp.obj	4810a788e7a32685
+885	1128	6692682424371761	process_transaction.exe	2225ab8a84f319e3
+8	768	6692683777126767	CMakeFiles/6_FinanceOverseer.dir/src/process_transaction.cpp.obj	4810a788e7a32685
+768	923	6692683778563221	process_transaction.exe	2225ab8a84f319e3
