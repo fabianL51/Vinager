@@ -6,7 +6,7 @@
 # It is included in the main 'build.ninja'.
 
 # =============================================================================
-# Project: 6_FinanceOverseer
+# Project: 9_Vinager
 # Configurations: 
 # =============================================================================
 # =============================================================================
@@ -14,7 +14,7 @@
 #############################################
 # Rule for compiling CXX files.
 
-rule CXX_COMPILER__6_FinanceOverseer_
+rule CXX_COMPILER__9_Vinager_
   depfile = $DEP_FILE
   deps = gcc
   command = C:\msys64\mingw64\bin\c++.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
@@ -24,7 +24,7 @@ rule CXX_COMPILER__6_FinanceOverseer_
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__6_FinanceOverseer_
+rule CXX_EXECUTABLE_LINKER__9_Vinager_
   command = cmd.exe /C "$PRE_LINK && C:\msys64\mingw64\bin\c++.exe $FLAGS $LINK_FLAGS $in -o $TARGET_FILE -Wl,--out-implib,$TARGET_IMPLIB -Wl,--major-image-version,0,--minor-image-version,0 $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -SD:\Project\6_FinanceOverseer\01_init_bank -BD:\Project\6_FinanceOverseer\01_init_bank\build
+  command = C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -SD:\Project\9_Vinager\01_add_bank -BD:\Project\9_Vinager\01_add_bank\build
   description = Re-running CMake...
   generator = 1
 

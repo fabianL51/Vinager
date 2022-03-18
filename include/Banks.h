@@ -24,7 +24,7 @@ class Bank{
 
         // set functions to set values of bank's properties
         std::string set_Bank_name(std::string Name) {return _Name = Name;};
-        double set_Bank_initial_money(double StartAmount) {return _MoneyAmount = StartAmount;};
+        double set_Bank_money(double StartAmount) {return _MoneyAmount = StartAmount;};
 
     private:
         // initialize both properties in class

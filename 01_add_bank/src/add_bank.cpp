@@ -5,7 +5,7 @@
 
 /* This script initializes banks and saves the data in an excel data */
 
-Bank initialize_bank(){
+Bank add_bank(){
 
     /* This function initializes single bank upon called in main function */
     
@@ -47,7 +47,7 @@ Bank initialize_bank(){
 
     // set bank name and initial money by calling respective functions in Banks.h
     bank_.set_Bank_name(Bank_name);
-    bank_.set_Bank_initial_money(start_money);
+    bank_.set_Bank_money(start_money);
 
     // return bank_ as output
     return bank_;
@@ -109,7 +109,7 @@ int main(){
     std::cout << std::endl << "Initializing new bank informations ..." << std::endl;
     
     // call the function initialize_bank to begin bank's intialization
-    Bank bank_ = initialize_bank();
+    Bank bank_ = add_bank();
 
     // save bank name in a string variable
     std::string bank_name = bank_.get_Bank_name();

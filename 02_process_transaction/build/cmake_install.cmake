@@ -1,8 +1,8 @@
-# Install script for directory: D:/Project/6_FinanceOverseer/02_process_transaction
+# Install script for directory: D:/Project/9_Vinager/02_process_transaction
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/6_FinanceOverseer")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/9_Vinager")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/Project/6_FinanceOverseer/02_process_transaction/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Project/9_Vinager/02_process_transaction/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -42,7 +42,7 @@ int main(){
 
             // get the bank information
             tempBank.set_Bank_name(wks.cell(name_cell).to_string());
-            tempBank.set_Bank_initial_money(wks.cell(balance_cell).value<int>());
+            tempBank.set_Bank_money(wks.cell(balance_cell).value<int>());
             
             // store bank into vector ActiveBanks
             ActiveBanks.emplace_back(tempBank);

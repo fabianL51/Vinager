@@ -34,7 +34,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = D$:/Project/9_Vinager/02_process_transaction/build/
+cmake_ninja_workdir = D$:/Project/9_Vinager/01_add_bank/build/
 # =============================================================================
 # Object build statements for EXECUTABLE target 9_Vinager
 
@@ -44,14 +44,14 @@ cmake_ninja_workdir = D$:/Project/9_Vinager/02_process_transaction/build/
 
 build cmake_object_order_depends_target_9_Vinager: phony || CMakeFiles/9_Vinager.dir
 
-build CMakeFiles/9_Vinager.dir/src/process_transaction.cpp.obj: CXX_COMPILER__9_Vinager_ D$:/Project/9_Vinager/02_process_transaction/src/process_transaction.cpp || cmake_object_order_depends_target_9_Vinager
-  DEP_FILE = CMakeFiles\9_Vinager.dir\src\process_transaction.cpp.obj.d
+build CMakeFiles/9_Vinager.dir/src/add_bank.cpp.obj: CXX_COMPILER__9_Vinager_ D$:/Project/9_Vinager/01_add_bank/src/add_bank.cpp || cmake_object_order_depends_target_9_Vinager
+  DEP_FILE = CMakeFiles\9_Vinager.dir\src\add_bank.cpp.obj.d
   FLAGS = -std=gnu++14
   INCLUDES = -ID:/Project/9_Vinager/include
   OBJECT_DIR = CMakeFiles\9_Vinager.dir
   OBJECT_FILE_DIR = CMakeFiles\9_Vinager.dir\src
   TARGET_COMPILE_PDB = CMakeFiles\9_Vinager.dir\
-  TARGET_PDB = process_transaction.pdb
+  TARGET_PDB = initialize_bank.pdb
 
 
 # =============================================================================
@@ -59,24 +59,24 @@ build CMakeFiles/9_Vinager.dir/src/process_transaction.cpp.obj: CXX_COMPILER__9_
 
 
 #############################################
-# Link the executable process_transaction.exe
+# Link the executable initialize_bank.exe
 
-build process_transaction.exe: CXX_EXECUTABLE_LINKER__9_Vinager_ CMakeFiles/9_Vinager.dir/src/process_transaction.cpp.obj | C$:/msys64/mingw64/bin/libxlnt.dll
+build initialize_bank.exe: CXX_EXECUTABLE_LINKER__9_Vinager_ CMakeFiles/9_Vinager.dir/src/add_bank.cpp.obj | C$:/msys64/mingw64/bin/libxlnt.dll
   LINK_LIBRARIES = C:/msys64/mingw64/bin/libxlnt.dll  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\9_Vinager.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
   TARGET_COMPILE_PDB = CMakeFiles\9_Vinager.dir\
-  TARGET_FILE = process_transaction.exe
-  TARGET_IMPLIB = libprocess_transaction.dll.a
-  TARGET_PDB = process_transaction.pdb
+  TARGET_FILE = initialize_bank.exe
+  TARGET_IMPLIB = libinitialize_bank.dll.a
+  TARGET_PDB = initialize_bank.pdb
 
 
 #############################################
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\Project\9_Vinager\02_process_transaction\build && C:\msys64\mingw64\bin\cmake-gui.exe -SD:\Project\9_Vinager\02_process_transaction -BD:\Project\9_Vinager\02_process_transaction\build"
+  COMMAND = cmd.exe /C "cd /D D:\Project\9_Vinager\01_add_bank\build && C:\msys64\mingw64\bin\cmake-gui.exe -SD:\Project\9_Vinager\01_add_bank -BD:\Project\9_Vinager\01_add_bank\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -88,7 +88,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D D:\Project\9_Vinager\02_process_transaction\build && C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -SD:\Project\9_Vinager\02_process_transaction -BD:\Project\9_Vinager\02_process_transaction\build"
+  COMMAND = cmd.exe /C "cd /D D:\Project\9_Vinager\01_add_bank\build && C:\msys64\mingw64\bin\cmake.exe --regenerate-during-build -SD:\Project\9_Vinager\01_add_bank -BD:\Project\9_Vinager\01_add_bank\build"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -98,7 +98,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build 9_Vinager: phony process_transaction.exe
+build 9_Vinager: phony initialize_bank.exe
 
 # =============================================================================
 # Folder targets.
@@ -106,9 +106,9 @@ build 9_Vinager: phony process_transaction.exe
 # =============================================================================
 
 #############################################
-# Folder: D:/Project/9_Vinager/02_process_transaction/build
+# Folder: D:/Project/9_Vinager/01_add_bank/build
 
-build all: phony process_transaction.exe
+build all: phony initialize_bank.exe
 
 # =============================================================================
 # Built-in targets
