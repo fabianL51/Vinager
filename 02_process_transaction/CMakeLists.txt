@@ -1,26 +1,28 @@
 cmake_minimum_required(VERSION 3.13)  # CMake version check
 set(CMAKE_CXX_STANDARD 14)            # Enable c++14 standard
-project(9_Vinager)
+# get variable project name
+get_filename_component(ProjectId ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+string(REPLACE " " "_" ProjectId ${ProjectId})
+project(${ProjectId})
 
-set(9_Vinager "process_transaction.cpp.cpp")
-
-add_executable(9_Vinager 
+# add executable
+add_executable(${ProjectId}
   src/process_transaction.cpp
 )
 
-set_target_properties(9_Vinager
+# executable name
+set_target_properties(${ProjectId}
     PROPERTIES 
         OUTPUT_NAME "process_transaction")
 
 
-set(MSYSPath "C:/msys64/mingw64")
-set(MainPath "D:/Project/9_Vinager")
+# get main Path
+get_filename_component(MainPath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 
-include_directories(${MSYSPath}/include)
 include_directories(${MainPath}/include)
 
-target_link_libraries(9_Vinager 
-${MSYSPath}/bin/libxlnt.dll)
+target_link_libraries(${ProjectId} 
+${MainPath}/lib/libxlnt.dll)
 
 
 

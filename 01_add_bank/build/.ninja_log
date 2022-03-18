@@ -1,3 +1,5 @@
 # ninja log v5
-1	747	6693139194654539	CMakeFiles/9_Vinager.dir/src/add_bank.cpp.obj	7027bafcf41593ff
-749	933	6693139196495049	initialize_bank.exe	6fee0e5c1f390a0f
+7	1291	6693330457331814	CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj	cbcfb0398481290b
+1051	1269	6693323276759186	add_bank.exe	c6e37dce26ec8465
+7	1399	6693330903801862	CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj	cbcfb0398481290b
+1400	1839	6693330908165307	add_bank.exe	c6e37dce26ec8465
