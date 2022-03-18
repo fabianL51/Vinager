@@ -13,18 +13,25 @@ add_executable(${ProjectId}
 
 # executable name
 set_target_properties(${ProjectId}
-    PROPERTIES 
-        OUTPUT_NAME "add_bank")
-
+  PROPERTIES 
+    OUTPUT_NAME "add_bank")
 
 # get main Path
 get_filename_component(MainPath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 
+# activate include in main Path
 include_directories(${MainPath}/include)
 
+# link to libraries in main Path
 target_link_libraries(${ProjectId} 
-${MainPath}/lib/libxlnt.dll)
+  ${MainPath}/lib/libxlnt.dll)
 
+# move executable to main Path
+add_custom_command(TARGET ${ProjectId} 
+  POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${ProjectId}> ${MainPath}/exe)
+
+# uncomment this for debugging variables
 #[[ get_cmake_property(_variableNames VARIABLES)
 list (SORT _variableNames)
 foreach (_variableName ${_variableNames})

@@ -62,7 +62,7 @@ build CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj: CXX_COMPILER__01_add_bank
 build add_bank.exe: CXX_EXECUTABLE_LINKER__01_add_bank_ CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj | D$:/Project/9_Vinager/lib/libxlnt.dll
   LINK_LIBRARIES = D:/Project/9_Vinager/lib/libxlnt.dll  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\01_add_bank.dir
-  POST_BUILD = cd .
+  POST_BUILD = cmd.exe /C "cd /D D:\Project\9_Vinager\01_add_bank\build && C:\msys64\mingw64\bin\cmake.exe -E copy D:/Project/9_Vinager/01_add_bank/build/add_bank.exe D:/Project/9_Vinager/exe"
   PRE_LINK = cd .
   TARGET_FILE = add_bank.exe
   TARGET_IMPLIB = libadd_bank.dll.a

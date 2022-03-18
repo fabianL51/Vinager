@@ -14,40 +14,52 @@ Bank add_bank(){
     std::string Bank_name; // string to store bank's name
     double start_money = NAN; // double to store starting money, initialize as NAN for validity checking later
 
+    // inform user about current process
+    std::cout << "Adding a bank... type 'stop' to end process" << std::endl;
 
     // ask the user in command window for the bank name
     std::cout << "Insert the bank/account name ";
     std::cin >> Bank_name;
     std::cout << std::endl;
 
-    // ask the user in command window for the starting money of the bank
-    std::cout << "Insert the start amount of money for " << Bank_name << " : ";
-    
-    // checking if the input starting money is valid
-    bool exit_loop = false; // varable exit_loop is bool and controls loop's exit when user gives a valid starting money
-    while (exit_loop == 0){
-        // begin loop as long as exit_loop is false
-        if (std::cin >> start_money){
-            // if start_money is valid then set exit_loop to true to exit loop
-            exit_loop = 1;
-        }
-        else {
-            // if start_money invalid then inform the user
-            std::cout << "Invalid amount of money, please insert a valid number for the start amount of money.";
-            // clear the input for start_money
-            std::cin.clear();
-            // set exit_loop to zero
-            exit_loop = 0;
-            // empty loop and ask user to give a new value for start_money
-            while (std::cin.get() != '\n') ;
-        }
-        std::cout << std::endl; // empty line for better display in command window
-
+    // check if user wishes to end process
+    bool end_process = false;
+    if (Bank_name == "stop"){
+        end_process = true;
+        // set bank name to error 111 to pass the information to main
+        bank_.set_Bank_name("Error 111");
     }
 
-    // set bank name and initial money by calling respective functions in Banks.h
-    bank_.set_Bank_name(Bank_name);
-    bank_.set_Bank_money(start_money);
+    if (end_process == false){
+        // ask the user in command window for the starting money of the bank
+        std::cout << "Insert the start amount of money for " << Bank_name << " : ";
+        
+        // checking if the input starting money is valid
+        bool exit_loop = false; // varable exit_loop is bool and controls loop's exit when user gives a valid starting money
+        while (exit_loop == 0){
+            // begin loop as long as exit_loop is false
+            if (std::cin >> start_money){
+                // if start_money is valid then set exit_loop to true to exit loop
+                exit_loop = 1;
+            }
+            else {
+                // if start_money invalid then inform the user
+                std::cout << "Invalid amount of money, please insert a valid number for the start amount of money.";
+                // clear the input for start_money
+                std::cin.clear();
+                // set exit_loop to zero
+                exit_loop = 0;
+                // empty loop and ask user to give a new value for start_money
+                while (std::cin.get() != '\n') ;
+            }
+            std::cout << std::endl; // empty line for better display in command window
+
+        }
+
+        // set bank name and initial money by calling respective functions in Banks.h
+        bank_.set_Bank_name(Bank_name);
+        bank_.set_Bank_money(start_money);
+    }
 
     // return bank_ as output
     return bank_;
@@ -110,22 +122,25 @@ int main(){
     
     // call the function initialize_bank to begin bank's intialization
     Bank bank_ = add_bank();
-
-    // save bank name in a string variable
-    std::string bank_name = bank_.get_Bank_name();
-
-    // prepare cells for new bank informations
-    std::string name_cell = "A" + std::to_string(last_row + 1); // name cell for bank name in column A and one row after last_row 
-    std::string balance_cell = "B" + std::to_string(last_row + 1); // balance cell for current bank's balance in column B and one row after last_row
     
-    // Inform the user about saving new bank properties
-    std::cout << std::endl << "Saving new bank informations ..." << std::endl;
+    // do nothing if bank name is Error 111
+    if (bank_.get_Bank_name() != "Error 111"){
+        // save bank name in a string variable
+        std::string bank_name = bank_.get_Bank_name();
 
-    // write the bank's property in excel table
-    wks.cell(name_cell).value(bank_name);
-    wks.cell(balance_cell).value(bank_.get_Bank_money());
-    // column properties: währung
+        // prepare cells for new bank informations
+        std::string name_cell = "A" + std::to_string(last_row + 1); // name cell for bank name in column A and one row after last_row 
+        std::string balance_cell = "B" + std::to_string(last_row + 1); // balance cell for current bank's balance in column B and one row after last_row
+        
+        // Inform the user about saving new bank properties
+        std::cout << std::endl << "Saving new bank informations ..." << std::endl;
 
-    // Save the workbook and free any allocated memory
-    wkb.save("Banks.xlsx");
+        // write the bank's property in excel table
+        wks.cell(name_cell).value(bank_name);
+        wks.cell(balance_cell).value(bank_.get_Bank_money());
+        // column properties: währung
+
+        // Save the workbook and free any allocated memory
+        wkb.save("Banks.xlsx");
+    }
 }

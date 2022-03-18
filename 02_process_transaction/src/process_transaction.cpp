@@ -54,6 +54,6 @@ int main(){
         std::cin >> a;
     }
     else{
-        std::cout << "please initialize your bank first." << std::endl;
+        std::cout << "please initialize your bank first before processing transaction." << std::endl;
     }
 }

@@ -12,17 +12,19 @@ add_executable(${ProjectId}
 
 # executable name
 set_target_properties(${ProjectId}
-    PROPERTIES 
-        OUTPUT_NAME "process_transaction")
+  PROPERTIES 
+    OUTPUT_NAME "process_transaction")
 
 
 # get main Path
 get_filename_component(MainPath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
 
+# activate include in main Path
 include_directories(${MainPath}/include)
 
+# link to libraries in main Path
 target_link_libraries(${ProjectId} 
-${MainPath}/lib/libxlnt.dll)
+  ${MainPath}/lib/libxlnt.dll)
 
 
 
