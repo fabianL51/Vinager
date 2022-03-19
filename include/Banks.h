@@ -21,13 +21,17 @@ class Bank{
         // get functions to get values from bank's properties
         std::string get_Bank_name() {return _Name;};
         double get_Bank_money() {return _MoneyAmount;};
+        std::string get_Bank_asset_type() {return _AssetType;};
 
         // set functions to set values of bank's properties
         std::string set_Bank_name(std::string Name) {return _Name = Name;};
         double set_Bank_money(double StartAmount) {return _MoneyAmount = StartAmount;};
+        std::string set_Bank_asset_type(std::string AssetType) {return _AssetType = AssetType;};
+        
 
     private:
         // initialize both properties in class
         std::string _Name;
         double _MoneyAmount;
+        std::string _AssetType;
 };

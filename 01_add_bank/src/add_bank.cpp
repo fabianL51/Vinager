@@ -13,13 +13,14 @@ Bank add_bank(){
     Bank bank_; // bank_ with class Bank (defined in Banks.h) to store all information about the bank account
     std::string Bank_name; // string to store bank's name
     double start_money = NAN; // double to store starting money, initialize as NAN for validity checking later
+    std::string asset_type;
 
     // inform user about current process
     std::cout << "Adding a bank... type 'stop' to end process" << std::endl;
 
     // ask the user in command window for the bank name
     std::cout << "Insert the bank/account name ";
-    std::cin >> Bank_name;
+    std::getline(std::cin, Bank_name);
     std::cout << std::endl;
 
     // check if user wishes to end process
@@ -35,14 +36,14 @@ Bank add_bank(){
         std::cout << "Insert the start amount of money for " << Bank_name << " : ";
         
         // checking if the input starting money is valid
-        bool exit_loop = false; // varable exit_loop is bool and controls loop's exit when user gives a valid starting money
+        bool exit_loop = false; // variable exit_loop is bool and controls loop's exit when user gives a valid starting money
         while (exit_loop == 0){
             // begin loop as long as exit_loop is false
             if (std::cin >> start_money){
                 // if start_money is valid then set exit_loop to true to exit loop
                 exit_loop = 1;
             }
-            else {
+            if (exit_loop == 0) {
                 // if start_money invalid then inform the user
                 std::cout << "Invalid amount of money, please insert a valid number for the start amount of money.";
                 // clear the input for start_money
@@ -56,9 +57,38 @@ Bank add_bank(){
 
         }
 
+        // ask the user in command window for the asset type of the bank account
+        std::cout << "Insert current asset type " << Bank_name << std::endl;
+        std::cout << "Insert 'L' for liquid asset and 'F' for fixed asset :" ;
+
+        // checking if the input asset_type is valid
+        exit_loop = false; // variable exit_loop is bool and controls loop's exit when user gives a valid asset_type
+        while (exit_loop == 0){
+            // begin loop as long as exit_loop is false
+            if (std::cin >> asset_type){
+                if (asset_type == "L" or asset_type == "F"){
+                     // if input for asset_type is valid then set exit loop as true
+                    exit_loop = 1;
+                }
+            }
+            if (exit_loop == 0) {
+                // if asset_type invalid then inform the user
+                std::cout << "Invalid asset type... Please insert a valid asset type" << std::endl;
+                std::cout << "Insert 'L' for liquid asset and 'F' for fixed asset :" ;
+                // clear the input for asset_type
+                std::cin.clear();
+                // set exit_loop to zero
+                exit_loop = 0;
+                // empty loop and ask user to give a new value for asset_type
+                while (std::cin.get() != '\n') ;
+            }
+            std::cout << std::endl; // empty line for better display in command window
+        }
+
         // set bank name and initial money by calling respective functions in Banks.h
         bank_.set_Bank_name(Bank_name);
         bank_.set_Bank_money(start_money);
+        bank_.set_Bank_asset_type(asset_type);
     }
 
     // return bank_ as output
@@ -99,6 +129,7 @@ int main(){
         // initialize Banks.xlsx
         wks.cell("A1").value("Bank Name"); // header for bank names
         wks.cell("B1").value("Current Balance"); // header for current balance
+        wks.cell("C1").value("Asset Type"); // header for asset type
     }
     else {
         // Banks.xlsx already exists
@@ -129,16 +160,25 @@ int main(){
         std::string bank_name = bank_.get_Bank_name();
 
         // prepare cells for new bank informations
-        std::string name_cell = "A" + std::to_string(last_row + 1); // name cell for bank name in column A and one row after last_row 
-        std::string balance_cell = "B" + std::to_string(last_row + 1); // balance cell for current bank's balance in column B and one row after last_row
-        
+        // name cell for bank name in column A and one row after last_row 
+        std::string name_cell = "A" + std::to_string(last_row + 1); 
+        // balance cell for current bank's balance in column B and one row after last_row
+        std::string balance_cell = "B" + std::to_string(last_row + 1); 
+        // asset type cell for current bank's balance in column C and one row after last_row
+        std::string asset_type_cell = "C" + std::to_string(last_row + 1); 
+
         // Inform the user about saving new bank properties
         std::cout << std::endl << "Saving new bank informations ..." << std::endl;
 
         // write the bank's property in excel table
         wks.cell(name_cell).value(bank_name);
         wks.cell(balance_cell).value(bank_.get_Bank_money());
-        // column properties: währung
+        if (bank_.get_Bank_asset_type() == "F"){
+            wks.cell(asset_type_cell).value("Fixed");
+        }
+        else if (bank_.get_Bank_asset_type() == "L"){
+            wks.cell(asset_type_cell).value("Liquid");
+        }
 
         // Save the workbook and free any allocated memory
         wkb.save("Banks.xlsx");
