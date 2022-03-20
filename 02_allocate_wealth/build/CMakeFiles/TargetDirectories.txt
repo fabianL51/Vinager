@@ -1,3 +1,0 @@
-D:/Project/9_Vinager/02_allocate_wealth/build/CMakeFiles/02_allocate_wealth.dir
-D:/Project/9_Vinager/02_allocate_wealth/build/CMakeFiles/edit_cache.dir
-D:/Project/9_Vinager/02_allocate_wealth/build/CMakeFiles/rebuild_cache.dir
