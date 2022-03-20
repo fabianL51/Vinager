@@ -1,3 +1,0 @@
-D:/Project/9_Vinager/module/00_create_workbook/01_banking/build/CMakeFiles/01_banking.dir
-D:/Project/9_Vinager/module/00_create_workbook/01_banking/build/CMakeFiles/edit_cache.dir
-D:/Project/9_Vinager/module/00_create_workbook/01_banking/build/CMakeFiles/rebuild_cache.dir

@@ -1,3 +1,5 @@
 # ninja log v5
-1	1216	6694765462516447	CMakeFiles/02_allocate_wealth.dir/src/allocate_wealth.cpp.obj	8c3b4d65a80c639f
-1219	1606	6694765465607799	allocate_wealth.exe	a6ba5507e5c8be44
+4	909	6695184253606328	CMakeFiles/02_allocate_wealth.dir/src/allocate_wealth.cpp.obj	8c3b4d65a80c639f
+910	1098	6695184255206168	allocate_wealth.exe	a6ba5507e5c8be44
+4	881	6695185041922817	CMakeFiles/02_allocate_wealth.dir/src/allocate_wealth.cpp.obj	8c3b4d65a80c639f
+882	1081	6695185043588669	allocate_wealth.exe	a6ba5507e5c8be44

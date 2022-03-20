@@ -5,52 +5,64 @@
 
 /* This script initializes banks and saves the data in an excel data */
 
-Bank add_bank(){
-
-    /* This function initializes single bank upon called in main function */
+int main(){
     
-    // initialize variables
-    Bank bank_; // bank_ with class Bank (defined in Banks.h) to store all information about the bank account
-    std::string Bank_name; // string to store bank's name
-    double start_money = NAN; // double to store starting money, initialize as NAN for validity checking later
-    std::string asset_type;
+    /* This is the main function for bank initializaton */
 
-    // inform user about current process
+    // initialize variables and objects
+    xlnt::workbook BankWkb; // object to handle workbook using xlnt
+    xlnt::worksheet BankAccountWks; // object to handle worksheet using xlnt
+    std::string WorkbookName = "Banks.xlsx";
+    std::string SheetName = "Accounts";
+
+    // first step: checking excel containing banks' accounts information
+    std::cout << "Accesing Bank informations";
+
+    // Banks.xlsx already exists
+
+    // display message to user
+    std::cout << WorkbookName << " is found" << std::endl;
+    std::cout << "Loading banks informations" << std::endl;
+
+    // load Banks.xlsx using BankWkb
+    BankWkb.load(WorkbookName);
+
+    // set BankAccountWks to handle sheet Main
+    BankAccountWks = BankWkb.sheet_by_title(SheetName);
+    
+    // initialize variables to add bank
+    Bank bank;
+
+     // inform user about current process
     std::cout << "Adding a bank... type 'stop' to end process" << std::endl;
 
     // ask the user in command window for the bank name
     std::cout << "Insert the bank/account name ";
-    std::getline(std::cin, Bank_name);
+    std::getline(std::cin, bank.Name);
     std::cout << std::endl;
 
-    // check if user wishes to end process
-    bool end_process = false;
-    if (Bank_name == "stop"){
-        end_process = true;
-        // set bank name to error 111 to pass the information to main
-        bank_.set_Bank_name("Error 111");
-    }
+    // store user input for bank class
+    if (bank.Name != "stop"){
 
-    if (end_process == false){
         // ask the user in command window for the starting money of the bank
-        std::cout << "Insert the start amount of money for " << Bank_name << " : ";
+        std::cout << "Insert the start amount of money for " << bank.Name << " : ";
         
         // checking if the input starting money is valid
-        bool exit_loop = false; // variable exit_loop is bool and controls loop's exit when user gives a valid starting money
+        bool exit_loop = false; // variable exit_loop is bool in case user give invalid input
         while (exit_loop == 0){
             // begin loop as long as exit_loop is false
-            if (std::cin >> start_money){
-                // if start_money is valid then set exit_loop to true to exit loop
+            if (std::cin >> bank.Balance){
+                // if input value is valid then set exit_loop to true to exit loop
                 exit_loop = 1;
             }
             if (exit_loop == 0) {
-                // if start_money invalid then inform the user
+                // if input value invalid then inform the user
                 std::cout << "Invalid amount of money, please insert a valid number for the start amount of money.";
-                // clear the input for start_money
+                // clear the input
                 std::cin.clear();
                 // set exit_loop to zero
                 exit_loop = 0;
-                // empty loop and ask user to give a new value for start_money
+                // empty loop and ask user to give a new value
                 while (std::cin.get() != '\n') ;
             }
             std::cout << std::endl; // empty line for better display in command window
@@ -58,17 +70,24 @@ Bank add_bank(){
         }
 
         // ask the user in command window for the asset type of the bank account
-        std::cout << "Insert current asset type " << Bank_name << std::endl;
+        std::cout << "Insert current asset type " << bank.Name << std::endl;
         std::cout << "Insert 'L' for liquid asset and 'F' for fixed asset :" ;
 
         // checking if the input asset_type is valid
-        exit_loop = false; // variable exit_loop is bool and controls loop's exit when user gives a valid asset_type
+        exit_loop = false; // variable exit_loop is bool in case user give invalid input
         while (exit_loop == 0){
             // begin loop as long as exit_loop is false
-            if (std::cin >> asset_type){
-                if (asset_type == "L" or asset_type == "F"){
-                     // if input for asset_type is valid then set exit loop as true
+            if (std::cin >> bank.AssetType){
+                if (bank.AssetType == "L" or bank.AssetType == "F"){
+                    // if input for asset_type is valid then set exit loop as true
                     exit_loop = 1;
+                    // change asset type from abbreviations 
+                    if (bank.AssetType == "L"){
+                        bank.AssetType = "Liquid";
+                    }
+                    else if (bank.AssetType == "F"){
+                        bank.AssetType = "Fixed";
+                    }
                 }
             }
             if (exit_loop == 0) {
@@ -85,79 +104,8 @@ Bank add_bank(){
             std::cout << std::endl; // empty line for better display in command window
         }
 
-        // set bank name and initial money by calling respective functions in Banks.h
-        bank_.set_Bank_name(Bank_name);
-        bank_.set_Bank_money(start_money);
-        bank_.set_Bank_asset_type(asset_type);
-    }
-
-    // return bank_ as output
-    return bank_;
-}
-
-
-
-int main(){
-    
-    /* This is the main function for bank initializaton */
-
-    // initialize variables and objects
-    xlnt::workbook wkb; // object to handle workbook using xlnt
-    xlnt::worksheet wks; // object to handle worksheet using xlnt
-
-    // first step: checking excel containing banks' accounts information
-    std::cout << "Accesing Bank informations";
-
-    // store the existing status of Banks.xlsx by using file_exist function
-    bool isfile = file_exists("Banks.xlsx");
-
-    if (isfile == 0) {
-        // if Banks.xlsx doesn't exist
-
-        // display message to user
-        std::cout << "No Banks informations can be found" << std::endl;
-        std::cout << "Creating file Banks.xlsx to store new bank informations" << std::endl;
-
-        // create an object to handle sheet Main
-        wks = wkb.create_sheet();
-        wks.title("Main");
-
-        // delete first default sheet
-        xlnt::worksheet wks_to_delete = wkb.sheet_by_title("Sheet1");
-        wkb.remove_sheet(wks_to_delete);
-
-        // initialize Banks.xlsx
-        wks.cell("A1").value("Bank Name"); // header for bank names
-        wks.cell("B1").value("Current Balance"); // header for current balance
-        wks.cell("C1").value("Asset Type"); // header for asset type
-    }
-    else {
-        // Banks.xlsx already exists
-
-        // display message to user
-        std::cout << "Banks.xlsx is found" << std::endl;
-        std::cout << "Loading banks informations" << std::endl;
-
-        // load Banks.xlsx using wkb
-        wkb.load("Banks.xlsx");
-
-        // set wks to handle sheet Main
-        wks = wkb.sheet_by_title("Main");
-    }
-
-    // get last unempty row and inform the user
-    int last_row = wks.highest_row();
-
-    // Inform the user abput initialization
-    std::cout << std::endl << "Initializing new bank informations ..." << std::endl;
-    
-    // call the function initialize_bank to begin bank's intialization
-    Bank bank_ = add_bank();
-    
-    // do nothing if bank name is Error 111
-    if (bank_.get_Bank_name() != "Error 111"){
-        // save bank name in a string variable
-        std::string bank_name = bank_.get_Bank_name();
+        // get last unempty row and inform the user
+        int last_row = BankAccountWks.highest_row();
 
         // prepare cells for new bank informations
         // name cell for bank name in column A and one row after last_row 
@@ -166,21 +114,13 @@ int main(){
         std::string balance_cell = "B" + std::to_string(last_row + 1); 
         // asset type cell for current bank's balance in column C and one row after last_row
         std::string asset_type_cell = "C" + std::to_string(last_row + 1); 
+        
+        // store bank data into worksheet
+        BankAccountWks.cell(name_cell).value(bank.Name);
+        BankAccountWks.cell(balance_cell).value(bank.Balance);
+        BankAccountWks.cell(asset_type_cell).value(bank.AssetType);
 
-        // Inform the user about saving new bank properties
-        std::cout << std::endl << "Saving new bank informations ..." << std::endl;
-
-        // write the bank's property in excel table
-        wks.cell(name_cell).value(bank_name);
-        wks.cell(balance_cell).value(bank_.get_Bank_money());
-        if (bank_.get_Bank_asset_type() == "F"){
-            wks.cell(asset_type_cell).value("Fixed");
-        }
-        else if (bank_.get_Bank_asset_type() == "L"){
-            wks.cell(asset_type_cell).value("Liquid");
-        }
-
-        // Save the workbook and free any allocated memory
-        wkb.save("Banks.xlsx");
+        // save workbook
+        BankWkb.save(WorkbookName);
     }
 }
