@@ -8,13 +8,13 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId} 
-  src/accounting_wkb_wks.cpp
+  src/initialize_financial_records.cpp
 )
 
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "accounting_wkb_wks")
+    OUTPUT_NAME "initialize_workbook")
 
 # get main Path
 get_filename_component(SubModulePath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)

@@ -12,40 +12,92 @@ int main(){
     // checking excel containing banks' accounts information
     std::cout << "Accesing active bank accounts" << std::endl;;
 
-    // initialize variables and objects
-    xlnt::workbook BanksWkb;
-    xlnt::worksheet BanksAccWks, BanksWealthWks;
-    std::string WorkbookName = "Banks.xlsx";
-    int reallocate;
-    std::string wealth_class_cell, wealth_sum_cell;
-    double LiquidSum = 0;
-    double FixedSum = 0;
-    bool AllocateWealth = true;
+    // initialize workbook and worksheets
+    xlnt::workbook Wkb;
+    xlnt::worksheet Wks;
+    std::string current_year = std::to_string(get_current_time("year"));
+    std::string WkbName =current_year + "_FinancialRecords.xlsx";
 
     // load workbook
-    BanksWkb.load(WorkbookName);
+    Wkb.load(WkbName);
 
     // open worksheets
-    BanksAccWks = BanksWkb.sheet_by_title("Accounts");
-    BanksWealthWks = BanksWkb.sheet_by_title("Wealth Allocation");
+    Wks = Wkb.sheet_by_title("Accounts & Wealth");
 
-    // get the last row of Wealth Allocation
-    int wealth_last_row = BanksWealthWks.highest_row();
+    // get the last row of worksheet
+    int last_row = Wks.highest_row();
 
-    if (wealth_last_row > 1){
+    // iterate to get bank and wealth class data
+    // initialize variables
+    std::vector <Bank> BankVec;
+    std::vector <Asset> WealthClassVec;
+    Bank tempBank;
+    Asset tempWealthClass;
+    double LiquidSum = 0;
+    double FixedSum = 0;
+    int reallocate;
+    bool AllocateWealth = true;
+
+    for (int i = 2; i <= last_row; i++){
+        
+        // reinitialize temporary variables
+        tempBank, tempWealthClass;
+
+        // get bank data by checking if current cell A of current row has value
+        if (Wks.cell("A" + std::to_string(i)).has_value() == true){
+            tempBank.Name = Wks.cell( "A" + std::to_string(i) ).value<std::string>(); // col A: bank name
+            tempBank.AssetType = Wks.cell( "B" + std::to_string(i) ).value<std::string>(); // col B: bank asset type
+            tempBank.Balance = Wks.cell( "D" + std::to_string(i) ).value<double>(); // col D: current balance
+        }
+        else {
+            // if empty then name tempBank with error message
+            tempBank.Name = "21Err33";
+        }
+
+        // update liquid and fixed asset sum
+        if (tempBank.AssetType == "Fixed"){
+            FixedSum += tempBank.Balance;
+        }
+        else if (tempBank.AssetType == "Liquid"){
+            LiquidSum += tempBank.Balance;
+        }
+
+        // add bank to vector if tempBank contains valid data bank
+        if (tempBank.Name != "21Err33"){
+            BankVec.emplace_back(tempBank);
+        }
+     
+        // get wealth class data by checking if current cell H of current row has value
+        if (Wks.cell("H" + std::to_string(i)).has_value() == true){
+            tempWealthClass.Name = Wks.cell( "H" + std::to_string(i) ).value<std::string>(); // col H: wealth class name
+            tempWealthClass.Sum = Wks.cell( "J" + std::to_string(i) ).value<double>(); // col J: current balance
+        }
+        else {
+            // if empty then name tempBank with error message
+            tempWealthClass.Name = "42Err11";
+        }
+
+        // add wealth class to vector if tempBank contains valid data bank
+        if (tempWealthClass.Name != "42Err11"){
+            WealthClassVec.emplace_back(tempWealthClass);
+        }        
+    }
+
+    // display bank data
+    for (int i = 0; i <= BankVec.size() - 1; i++){
+        std::cout << BankVec.at(i).Name << " -- " << BankVec.at(i).AssetType << " :";
+        std::cout << std::fixed << std::setprecision(2) << BankVec.at(i).Balance << std::endl; 
+    }
+
+    // ask user if wealth class has already been allocated
+    if (WealthClassVec.size() > 0){
         // inform user that wealth may already have been allocated
         std::cout << "Wealth might have already been allocated" << std::endl;
-        std::cout << wealth_last_row << std::endl;
 
-        for (int i = 2; i <= wealth_last_row; i++){
-            // prepare cells for storing wealth informations
-            // row 0 doesn't exist and row 1 is header, so row i + 2 is the right row
-            wealth_class_cell = "A" + std::to_string(i);
-            wealth_sum_cell = "B" + std::to_string(i);
-
-            // display in command prompt
-            std::cout << "Layer : " << BanksWealthWks.cell(wealth_class_cell).value<std::string>() << " : ";
-            std::cout << std::fixed << std::setprecision(2) << BanksWealthWks.cell(wealth_sum_cell).value<double>() << std::endl; 
+            // display current wealth class
+            for (int i = 0; i <= WealthClassVec.size() - 1; i++){
+            std::cout << "Layer: " << WealthClassVec.at(i).Name << " : " ;
+            std::cout << std::fixed << std::setprecision(2) << WealthClassVec.at(i).Sum << std::endl; 
         }
 
         // ask user whether the wealth should be new allocated
@@ -58,33 +110,9 @@ int main(){
     }
 
     if (AllocateWealth == true){
-
-        // get last row of bank accounts sheet
-        double account_last_row = BanksAccWks.highest_row();
-
-        for (int i = 2; i <= account_last_row; i ++){
-                
-            // initialize cells for new bank informations
-            std::string name_cell, balance_cell, asset_type_cell;
-
-            // prepare cells for new bank informations
-            name_cell = "A" + std::to_string(i);
-            balance_cell = "B" + std::to_string(i);
-            asset_type_cell = "C" + std::to_string(i);
-
-            // display current bank informations 
-            std::cout << BanksAccWks.cell(name_cell).value<std::string>() << " - ";
-            std::cout << BanksAccWks.cell(asset_type_cell).value<std::string>() << " - ";
-            std::cout << BanksAccWks.cell(balance_cell).value<double>() << std::endl;
-
-            // get liquid and fixed asset sum
-            if (BanksAccWks.cell(asset_type_cell).value<std::string>() == "Liquid"){
-                LiquidSum += BanksAccWks.cell(balance_cell).value<double>();
-            }
-            else if (BanksAccWks.cell(asset_type_cell).value<std::string>() == "Fixed"){
-                FixedSum += BanksAccWks.cell(balance_cell).value<double>();
-            }
-        }
+        
+        // reinitialize wealth class vector
+        WealthClassVec;
 
         // inform user of total assets of each asset type
         std::cout << "Liquid assets total: " << std::fixed << std::setprecision(2) << LiquidSum;
@@ -93,6 +121,7 @@ int main(){
         // ask user how many wealth classes
         int n_wealth;
         bool exit_loop = false;
+
         // checking if the input starting money is valid
         std::cout << "Set the number of wealth classes for liquid assets ";
         while (exit_loop == 0){
@@ -119,8 +148,6 @@ int main(){
         }
 
         // allocate wealth class (only for liquid assets)
-        std::vector <Asset> WealthClass;
-        Asset tempWealthClass;
         double confirm;
         double MaxLiquidWealth = LiquidSum;
 
@@ -175,39 +202,37 @@ int main(){
                 }
 
                 // update vector
-                WealthClass.emplace_back(tempWealthClass);
+                WealthClassVec.emplace_back(tempWealthClass);
             }
 
         // add fixed assets
         Asset Fixed;
         Fixed.Name = "Fixed Asset";
         Fixed.Sum = FixedSum;
-        WealthClass.emplace_back(Fixed);
+        WealthClassVec.emplace_back(Fixed);
 
         // display in command prompt and store new wealth informations
-        for (int i = 0; i < WealthClass.size(); i++){
-            // prepare cells for storing wealth informations
-            // row 0 doesn't exist and row 1 is header, so row i + 2 is the right row
-            wealth_class_cell = "A" + std::to_string(i + 2);
-            wealth_sum_cell = "B" + std::to_string(i + 2);
-
+        for (int i = 0; i < WealthClassVec.size(); i++){
 
             // update the wealth information in excel
-            BanksWealthWks.cell(wealth_class_cell).value(WealthClass.at(i).Name);
-            BanksWealthWks.cell(wealth_sum_cell).value(WealthClass.at(i).Sum);
+            // row 0 doesn't exist and row 1 is header, so row i + 2 is the right row
+            Wks.cell("H" + std::to_string(i + 2)).value(WealthClassVec.at(i).Name); // col H: wealth class name
+            Wks.cell("I" + std::to_string(i + 2)).value(WealthClassVec.at(i).Sum); // col I: start balance
+            Wks.cell("J" + std::to_string(i + 2)).value(WealthClassVec.at(i).Sum); // col J: current balance
 
             // display in command prompt
-            std::cout << "Layer : " << WealthClass.at(i).Name << " : " << std::fixed << std::setprecision(2) << WealthClass.at(i).Sum << std::endl; 
+            std::cout << "Layer : " << WealthClassVec.at(i).Name << " : ";
+            std::cout << std::fixed << std::setprecision(2) << WealthClassVec.at(i).Sum << std::endl; 
         }
 
-        // save both fixed and liquid assets in column G and H
-        BanksWealthWks.cell("G2").value("Liquid");
-        BanksWealthWks.cell("G3").value("Fixed");
-        BanksWealthWks.cell("H2").value(LiquidSum);
-        BanksWealthWks.cell("H3").value(FixedSum);
+        // save both fixed and liquid assets in column N and O
+        Wks.cell("N2").value("Liquid");
+        Wks.cell("N3").value("Fixed");
+        Wks.cell("O2").value(LiquidSum);
+        Wks.cell("O3").value(FixedSum);
 
         // save workbook
-        BanksWkb.save(WorkbookName);
+        Wkb.save(WkbName);
     }
 }
 

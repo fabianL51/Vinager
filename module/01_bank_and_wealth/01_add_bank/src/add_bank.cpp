@@ -10,25 +10,26 @@ int main(){
     /* This is the main function for bank initializaton */
 
     // initialize variables and objects
-    xlnt::workbook BankWkb; // object to handle workbook using xlnt
-    xlnt::worksheet BankAccountWks; // object to handle worksheet using xlnt
-    std::string WorkbookName = "Banks.xlsx";
-    std::string SheetName = "Accounts";
+    xlnt::workbook Wkb; // object to handle workbook using xlnt
+    xlnt::worksheet AccWealthWks; // object to handle worksheet using xlnt
+    std::string current_year = std::to_string(get_current_time("year"));
+    std::string WkbName =current_year + "_FinancialRecords.xlsx";
+    std::string SheetName = "Accounts & Wealth";
 
     // first step: checking excel containing banks' accounts information
-    std::cout << "Accesing Bank informations";
+    std::cout << "Accesing Bank informations... ";
 
     // Banks.xlsx already exists
 
     // display message to user
-    std::cout << WorkbookName << " is found" << std::endl;
+    std::cout << WkbName << " is found" << std::endl;
     std::cout << "Loading banks informations" << std::endl;
 
-    // load Banks.xlsx using BankWkb
-    BankWkb.load(WorkbookName);
+    // load Banks.xlsx using Wkb
+    Wkb.load(WkbName);
 
-    // set BankAccountWks to handle sheet Main
-    BankAccountWks = BankWkb.sheet_by_title(SheetName);
+    // set AccWealthWks to handle sheet Main
+    AccWealthWks = Wkb.sheet_by_title(SheetName);
     
     // initialize variables to add bank
     Bank bank;
@@ -105,22 +106,19 @@ int main(){
         }
 
         // get last unempty row and inform the user
-        int last_row = BankAccountWks.highest_row();
-
-        // prepare cells for new bank informations
-        // name cell for bank name in column A and one row after last_row 
-        std::string name_cell = "A" + std::to_string(last_row + 1); 
-        // balance cell for current bank's balance in column B and one row after last_row
-        std::string balance_cell = "B" + std::to_string(last_row + 1); 
-        // asset type cell for current bank's balance in column C and one row after last_row
-        std::string asset_type_cell = "C" + std::to_string(last_row + 1); 
+        int last_row = AccWealthWks.highest_row();      
         
         // store bank data into worksheet
-        BankAccountWks.cell(name_cell).value(bank.Name);
-        BankAccountWks.cell(balance_cell).value(bank.Balance);
-        BankAccountWks.cell(asset_type_cell).value(bank.AssetType);
+        // name cell for bank name in column A and one row after last_row 
+        AccWealthWks.cell("A" + std::to_string(last_row + 1)).value(bank.Name);
+        // asset type cell for current bank's balance in column B and one row after last_row
+        AccWealthWks.cell("B" + std::to_string(last_row + 1)).value(bank.AssetType);
+        // balance cell for start bank's balance in column C and one row after last_row
+        AccWealthWks.cell("C" + std::to_string(last_row + 1)).value(bank.Balance);   
+        // balance cell for current bank's balance in column D and one row after last_row
+        AccWealthWks.cell("D" + std::to_string(last_row + 1)).value(bank.Balance);     
 
         // save workbook
-        BankWkb.save(WorkbookName);
+        Wkb.save(WkbName);
     }
 }

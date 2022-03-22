@@ -1,8 +1,8 @@
-# Install script for directory: D:/Project/9_Vinager/module/00_create_workbook/02_financial_records
+# Install script for directory: D:/Project/9_Vinager/module/00_create_workbook/01_financial_records
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/02_financial_records")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/01_financial_records")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/Project/9_Vinager/module/00_create_workbook/02_financial_records/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Project/9_Vinager/module/00_create_workbook/01_financial_records/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

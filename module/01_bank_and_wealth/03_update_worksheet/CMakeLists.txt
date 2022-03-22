@@ -8,13 +8,13 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId} 
-  src/banking_wkb_wks.cpp
+  src/allocate_wealth.cpp
 )
 
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "banking_wkb_wks")
+    OUTPUT_NAME "allocate_wealth")
 
 # get main Path
 get_filename_component(SubModulePath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
@@ -32,10 +32,3 @@ target_link_libraries(${ProjectId}
 add_custom_command(TARGET ${ProjectId} 
   POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${ProjectId}> ${MainPath}/exe)
-
-# uncomment this for debugging variables
-#[[ get_cmake_property(_variableNames VARIABLES)
-list (SORT _variableNames)
-foreach (_variableName ${_variableNames})
-    message(STATUS "${_variableName}=${${_variableName}}")
-endforeach() ]]
