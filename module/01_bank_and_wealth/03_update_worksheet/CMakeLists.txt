@@ -8,13 +8,13 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId} 
-  src/allocate_wealth.cpp
+  src/update_sheet.cpp
 )
 
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "allocate_wealth")
+    OUTPUT_NAME "update_sheet_after_init")
 
 # get main Path
 get_filename_component(SubModulePath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
