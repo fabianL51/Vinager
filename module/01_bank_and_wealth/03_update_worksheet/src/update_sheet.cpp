@@ -14,7 +14,7 @@ int main(){
     xlnt::worksheet AccWealthWks;
 
     // load workbook
-    std::string current_year = std::to_string(get_current_time("year"));
+    std::string current_year = std::to_string(get_current_date_data("year"));
     std::string WkbName =current_year + "_FinancialRecords.xlsx";
     Wkb.load(WkbName);
     AccWealthWks = Wkb.sheet_by_title("Accounts & Wealth");
@@ -76,18 +76,31 @@ int main(){
     }
     
     // expand Bank column in Records sheet: 1st row starting at column G
+    // and fill in the starting details
     if (BankVec.size() > 0){
         xlnt::worksheet RecordsWks = Wkb.sheet_by_title("Records");
-        xlnt::column_t last_col = RecordsWks.highest_column();
-        xlnt::border header_border;
-        header_border = RecordsWks.cell(last_col.column_string_from_index(last_col.index) + "1").border(); // border style of F1
-    
+        xlnt::column_t last_col;
+        xlnt::border header_border, data_border;
+
+        header_border = RecordsWks.cell("F1").border(); // border style of F1 for header
+        data_border = RecordsWks.cell("A2").border(); // border style of A2 for data
+
+        last_col.index = last_col.column_index_from_string("F"); // use column F as reference
         for (int i = 0; i <= BankVec.size() - 1; i++){
+            // expand headers
             RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "1").value(BankVec.at(i).Name);
             RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "1").border(header_border);
+
+            // fill the starting balance for each bank
+            RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "2").value(BankVec.at(i).Balance);
         }
-    }
     
+        // fill starting cells 
+        RecordsWks.cell("A2").value(get_current_date()); // A2: Date
+        RecordsWks.cell("D2").value("Starting Point"); // D2: Detail
+        RecordsWks.range(xlnt::range_reference(last_col.column_string() + "2:" + RecordsWks.highest_column().column_string() + "2")).border(data_border);
+    }
+
     // save workbook
     Wkb.save(WkbName);
 }

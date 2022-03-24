@@ -15,7 +15,7 @@ int main(){
     // initialize workbook and worksheets
     xlnt::workbook Wkb;
     xlnt::worksheet Wks;
-    std::string current_year = std::to_string(get_current_time("year"));
+    std::string current_year = std::to_string(get_current_date_data("year"));
     std::string WkbName =current_year + "_FinancialRecords.xlsx";
 
     // load workbook

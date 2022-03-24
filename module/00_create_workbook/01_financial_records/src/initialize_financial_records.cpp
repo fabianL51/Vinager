@@ -11,7 +11,7 @@ int main(){
     xlnt::worksheet BalanceSheetWks, RecordsWks;
 
     // get current year for file name
-    std::string current_year = std::to_string(get_current_time("year"));
+    std::string current_year = std::to_string(get_current_date_data("year"));
 
     // initialize file name for Financial Records
     std::string TemplateFileName = "FinancialRecords_Template.xlsx";

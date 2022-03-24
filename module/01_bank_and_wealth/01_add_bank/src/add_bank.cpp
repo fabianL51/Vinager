@@ -12,7 +12,7 @@ int main(){
     // initialize variables and objects
     xlnt::workbook Wkb; // object to handle workbook using xlnt
     xlnt::worksheet AccWealthWks; // object to handle worksheet using xlnt
-    std::string current_year = std::to_string(get_current_time("year"));
+    std::string current_year = std::to_string(get_current_date_data("year"));
     std::string WkbName =current_year + "_FinancialRecords.xlsx";
     std::string SheetName = "Accounts & Wealth";
 
