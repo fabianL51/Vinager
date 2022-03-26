@@ -12,7 +12,7 @@ int main(){
     // initialize variables and objects
     xlnt::workbook Wkb; // object to handle workbook using xlnt
     xlnt::worksheet AccWealthWks; // object to handle worksheet using xlnt
-    std::string current_year = std::to_string(get_current_date_data("year"));
+    std::string current_year = std::to_string(xlnt::date::today().year);
     std::string WkbName =current_year + "_FinancialRecords.xlsx";
     std::string SheetName = "Accounts & Wealth";
 
@@ -36,7 +36,7 @@ int main(){
 
      // inform user about current process
     std::cout << "Adding a bank... type 'stop' to end process" << std::endl;
-
+    std::cout << "Next row" << AccWealthWks.next_row() << std::endl;
     // ask the user in command window for the bank name
     std::cout << "Insert the bank/account name ";
     std::getline(std::cin, bank.Name);
@@ -107,7 +107,8 @@ int main(){
 
         // get last unempty row and inform the user
         int last_row = AccWealthWks.highest_row();      
-        
+        std::cout << "highest row" << last_row;  
+        std::cin >> last_row;
         // store bank data into worksheet
         // name cell for bank name in column A and one row after last_row 
         AccWealthWks.cell("A" + std::to_string(last_row + 1)).value(bank.Name);
@@ -116,7 +117,9 @@ int main(){
         // balance cell for start bank's balance in column C and one row after last_row
         AccWealthWks.cell("C" + std::to_string(last_row + 1)).value(bank.Balance);   
         // balance cell for current bank's balance in column D and one row after last_row
-        AccWealthWks.cell("D" + std::to_string(last_row + 1)).value(bank.Balance);     
+        AccWealthWks.cell("D" + std::to_string(last_row + 1)).value(bank.Balance);
+        // formula for change in balance in column E
+        AccWealthWks.cell("E" + std::to_string(last_row + 1)).formula("=D" + std::to_string(last_row + 1) + "-C" + std::to_string(last_row + 1));     
 
         // save workbook
         Wkb.save(WkbName);

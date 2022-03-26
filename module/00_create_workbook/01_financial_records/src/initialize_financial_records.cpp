@@ -9,9 +9,8 @@ int main(){
     // initialize all workbooks and worksheets
     xlnt::workbook FinCordsWkb;
     xlnt::worksheet BalanceSheetWks, RecordsWks;
-
     // get current year for file name
-    std::string current_year = std::to_string(get_current_date_data("year"));
+    std::string current_year = std::to_string(xlnt::date::today().year);
 
     // initialize file name for Financial Records
     std::string TemplateFileName = "FinancialRecords_Template.xlsx";
@@ -20,25 +19,26 @@ int main(){
     // open Template
     FinCordsWkb.load(TemplateFileName);
 
-    // get sheet accounts and wealth to be initialized
-    xlnt::worksheet Wks = FinCordsWkb.sheet_by_title("Accounts & Wealth");
+    // initialize Financial Statement sheet
+    xlnt::worksheet FinStateWks = FinCordsWkb.sheet_by_title("Financial Statement");
+    int start_col = xlnt::column_t::column_index_from_string("B");
+    int end_col = xlnt::column_t::column_index_from_string("M");
+    std::string col_string;
+    for (int i = start_col; i <= end_col; i++){
+        // update formula for gross income and total expenses as sum from Income and Expenses sheet
+        col_string = xlnt::column_t::column_string_from_index(i);
+        // gross income in 3rd row
+        FinStateWks.cell(col_string + "3").formula("=SUM(Income!" + col_string + ":" + col_string + ")");
+        // total expenses in 4rd row
+        FinStateWks.cell(col_string + "4").formula("=SUM(Expenses!" + col_string + ":" + col_string + ")");
+        // net income in 7th row
+        FinStateWks.cell(col_string + "7").formula("=" + col_string + "3+" + col_string + "4");
+    }
 
-    // initialize headers
-    // Bank and Accounts
-    Wks.cell("A1").value("Bank Name");
-    Wks.cell("B1").value("Asset Type");
-    Wks.cell("C1").value("Start Balance"); 
-    Wks.cell("D1").value("Current Balance");
-    Wks.cell("E1").value("Change in Balance");
-
-    // Wealth
-    Wks.cell("H1").value("Class Name");
-    Wks.cell("I1").value("Start Balance"); 
-    Wks.cell("J1").value("Current Balance");
-    Wks.cell("K1").value("Change in Balance");
-
-    Wks.cell("N1").value("Asset Type"); // asset type for liquid and fixed
-    Wks.cell("O1").value("Asset Total"); // total value for asset type
+    // add formula for yearly values
+    FinStateWks.cell("N3").formula("=SUM(B3:M3)");
+    FinStateWks.cell("N4").formula("=SUM(B4:M4)");
+    FinStateWks.cell("N7").formula("=SUM(B7:M7)");
 
     // save workbook as a new file
     FinCordsWkb.save(CurrentFileName);
