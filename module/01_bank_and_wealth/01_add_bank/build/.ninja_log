@@ -1,4 +1,5 @@
 # ninja log v5
-7	1381	6699925942639445	CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj	3ab1abb3147f894e
-1074	1341	6699913749292780	add_bank.exe	ad203e3cd1239338
-9	534	6699926360919351	add_bank.exe	ad203e3cd1239338
+10	1380	6699964554178085	CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj	3ab1abb3147f894e
+1381	1659	6699964556480179	add_bank.exe	ad203e3cd1239338
+9	1223	6699977238973066	CMakeFiles/01_add_bank.dir/src/add_bank.cpp.obj	3ab1abb3147f894e
+1225	1539	6699977241626322	add_bank.exe	ad203e3cd1239338

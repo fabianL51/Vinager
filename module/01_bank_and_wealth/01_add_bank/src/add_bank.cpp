@@ -10,11 +10,11 @@ int main(){
     /* This is the main function for bank initializaton */
 
     // initialize variables and objects
-    xlnt::workbook Wkb; // object to handle workbook using xlnt
-    xlnt::worksheet AccWealthWks; // object to handle worksheet using xlnt
-    std::string current_year = std::to_string(xlnt::date::today().year);
-    std::string WkbName =current_year + "_FinancialRecords.xlsx";
-    std::string SheetName = "Accounts & Wealth";
+    xlnt::workbook FinCordsWkb, UtilitiesWkb; // object to handle workbook using xlnt
+    xlnt::worksheet AssetsWks, UtilitesWks; // object to handle worksheet using xlnt
+    std::string FinCordsWkbName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
+    std::string SheetName = "Assets";
+    std::string UtilitiesName = "Utilities.xlsx";
 
     // first step: checking excel containing banks' accounts information
     std::cout << "Accesing Bank informations... ";
@@ -22,21 +22,20 @@ int main(){
     // Banks.xlsx already exists
 
     // display message to user
-    std::cout << WkbName << " is found" << std::endl;
+    std::cout << FinCordsWkbName << " is found" << std::endl;
     std::cout << "Loading banks informations" << std::endl;
 
-    // load Banks.xlsx using Wkb
-    Wkb.load(WkbName);
+    // load Banks.xlsx using FinCordsWkb
+    FinCordsWkb.load(FinCordsWkbName);
 
-    // set AccWealthWks to handle sheet Main
-    AccWealthWks = Wkb.sheet_by_title(SheetName);
+    // set AssetsWks to handle sheet Main
+    AssetsWks = FinCordsWkb.sheet_by_title(SheetName);
     
     // initialize variables to add bank
     Bank bank;
 
      // inform user about current process
     std::cout << "Adding a bank... type 'stop' to end process" << std::endl;
-    std::cout << "Next row" << AccWealthWks.next_row() << std::endl;
     // ask the user in command window for the bank name
     std::cout << "Insert the bank/account name ";
     std::getline(std::cin, bank.Name);
@@ -105,23 +104,32 @@ int main(){
             std::cout << std::endl; // empty line for better display in command window
         }
 
-        // get last unempty row and inform the user
-        int last_row = AccWealthWks.highest_row();      
-        std::cout << "highest row" << last_row;  
-        std::cin >> last_row;
+        // get last unempty row by getting the value from utilities
+        UtilitiesWkb.load(UtilitiesName);
+        UtilitesWks = UtilitiesWkb.active_sheet();
+        int current_row = UtilitesWks.cell("B4").value<int>();      
         // store bank data into worksheet
         // name cell for bank name in column A and one row after last_row 
-        AccWealthWks.cell("A" + std::to_string(last_row + 1)).value(bank.Name);
+        AssetsWks.cell("A" + std::to_string(current_row)).value(bank.Name);
         // asset type cell for current bank's balance in column B and one row after last_row
-        AccWealthWks.cell("B" + std::to_string(last_row + 1)).value(bank.AssetType);
+        AssetsWks.cell("B" + std::to_string(current_row)).value(bank.AssetType);
         // balance cell for start bank's balance in column C and one row after last_row
-        AccWealthWks.cell("C" + std::to_string(last_row + 1)).value(bank.Balance);   
+        AssetsWks.cell("C" + std::to_string(current_row)).value(bank.Balance);   
         // balance cell for current bank's balance in column D and one row after last_row
-        AccWealthWks.cell("D" + std::to_string(last_row + 1)).value(bank.Balance);
+        AssetsWks.cell("D" + std::to_string(current_row)).value(bank.Balance);
         // formula for change in balance in column E
-        AccWealthWks.cell("E" + std::to_string(last_row + 1)).formula("=D" + std::to_string(last_row + 1) + "-C" + std::to_string(last_row + 1));     
+        AssetsWks.cell("E" + std::to_string(current_row)).formula("=D" + std::to_string(current_row) + "-C" + std::to_string(current_row));     
+        
+        // prepare the border for next row in current row is not the 4th row
+        if (current_row > 4){
+            xlnt::border data_border = AssetsWks.cell("A4").border();
+            AssetsWks.range("A" + std::to_string(current_row + 1) + ":E" + std::to_string(current_row + 1)).border(data_border);
+        }
+        // Update the value in utilities workbook
+        UtilitesWks.cell("B4").value(current_row + 1);
 
-        // save workbook
-        Wkb.save(WkbName);
+        // save workbooks
+        FinCordsWkb.save(FinCordsWkbName);
+        UtilitiesWkb.save(UtilitiesName);
     }
 }

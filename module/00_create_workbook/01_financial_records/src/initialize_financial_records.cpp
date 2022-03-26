@@ -7,14 +7,12 @@
 int main(){
 
     // initialize all workbooks and worksheets
-    xlnt::workbook FinCordsWkb;
-    xlnt::worksheet BalanceSheetWks, RecordsWks;
-    // get current year for file name
-    std::string current_year = std::to_string(xlnt::date::today().year);
+    xlnt::workbook FinCordsWkb, UtilitiesWkb;
+    xlnt::worksheet BalanceSheetWks, RecordsWks, UtilitiesWks;
 
     // initialize file name for Financial Records
     std::string TemplateFileName = "FinancialRecords_Template.xlsx";
-    std::string CurrentFileName = current_year + "_FinancialRecords.xlsx";
+    std::string CurrentFileName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
 
     // open Template
     FinCordsWkb.load(TemplateFileName);
@@ -42,5 +40,39 @@ int main(){
 
     // save workbook as a new file
     FinCordsWkb.save(CurrentFileName);
+
+    // add a utility workbook to save latest rows and columns
+    UtilitiesWks = UtilitiesWkb.active_sheet();
+    UtilitiesWks.title("Main");
+
+    // header
+    UtilitiesWks.cell("A1").value("Properties");
+    UtilitiesWks.cell("B1").value("Current Row/Column");
+    
+    // for Financial Statement sheet
+    UtilitiesWks.cell("A2").value("Wealth Class in Allocation Row"); // wealth class in allocation
+    UtilitiesWks.cell("B2").value(12);
+    UtilitiesWks.cell("A3").value("Wealth Class in Cash Flow Row"); // wealth class in cash flow
+    UtilitiesWks.cell("B3").value(16);
+
+    // Asset sheets
+    UtilitiesWks.cell("A4").value("Account Row");
+    UtilitiesWks.cell("B4").value(3);
+    UtilitiesWks.cell("A5").value("Wealth Row");
+    UtilitiesWks.cell("B5").value(3);
+
+    // Income and Expenses sheets
+    UtilitiesWks.cell("A6").value("Income Row");
+    UtilitiesWks.cell("B6").value(2);
+    UtilitiesWks.cell("A7").value("Expense Row");
+    UtilitiesWks.cell("B7").value(2);
+
+    // Records sheet
+    UtilitiesWks.cell("A8").value("Records Row");
+    UtilitiesWks.cell("B8").value(2);
+    UtilitiesWks.cell("A9").value("Records Banks Column");
+    UtilitiesWks.cell("B9").value("G");
+
+    UtilitiesWkb.save("Utilities.xlsx");
 
 }
