@@ -212,36 +212,42 @@ int main(){
         int WC_Alloc_current_row = 12;
         int WC_CF_current_row = UtilWks.cell("B3").value<int>();
 
-        std::cout << n_wealth + WC_Alloc_current_row << WC_CF_current_row - 3;
-        std::cin >> n_wealth;
-        if (n_wealth + WC_Alloc_current_row >= WC_CF_current_row - 3){
-            FinStateWks.insert_rows(14, n_wealth);
-            WC_CF_current_row += n_wealth;
+        
+        if (n_wealth + WC_Alloc_current_row - 1 > WC_CF_current_row - 3){
+            FinStateWks.insert_rows(14, n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3);
+            WC_CF_current_row += n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3;
 
+            std::cout << "G5 to J" << n_wealth + wealth_current_row<< std::endl;
             // update borders in Assets sheet
             xlnt::range_reference reborder_range = xlnt::range_reference("G", 5, "J", n_wealth + wealth_current_row);
             AssetWks.range(reborder_range).border(data_border);
+            FinCordsWkb.save(FinCordsWkbName);
+
+            std::cout << "A14 to " << WC_CF_current_row - 3 << std::endl;
+            std::cin >> n_wealth;
             // update border in Financial sheet
             reborder_range = xlnt::range_reference("A", 14, "N", WC_CF_current_row - 3);
             FinStateWks.range(reborder_range).border(data_border);
+            FinCordsWkb.save(FinCordsWkbName);
 
-            reborder_range = xlnt::range_reference("A", WC_CF_current_row + 2, "N",  WC_CF_current_row + n_wealth);
-            FinStateWks.range(reborder_range).border(data_border); 
+            std::cout << "A" << WC_CF_current_row + 1 << " to " <<  WC_CF_current_row + n_wealth << std::endl;
+            reborder_range = xlnt::range_reference("A", WC_CF_current_row + 1, "N",  WC_CF_current_row + n_wealth);
+            FinStateWks.range(reborder_range).border(data_border);
+        }
 
-
+        FinCordsWkb.save(FinCordsWkbName);
+        std::cout << WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
+        std::cin >> n_wealth;
+        if (WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row) > 0){
             // clear cell containing old data in Assets sheet
             xlnt::range_reference delete_range = xlnt::range_reference("G", wealth_current_row + n_wealth, "J", wealth_current_row + n_wealth + 3);
             AssetWks.range(delete_range).clear_cells();
             
             // delete rows containing old data in Financial Statement sheet
-            std::cout << n_wealth + WC_Alloc_current_row << std::endl;
-            std::cout << WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row) << std::endl;
-            if (WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row) > 0){
-                FinStateWks.delete_rows(n_wealth + WC_Alloc_current_row, WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row));
-                WC_CF_current_row -= WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
-            }
+            FinStateWks.delete_rows(n_wealth + WC_Alloc_current_row, WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row));
+            WC_CF_current_row -= WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
+            FinStateWks.delete_rows(WC_CF_current_row + n_wealth, 10);
         }
-
         
 
         // display in command prompt and store new wealth informations
@@ -280,6 +286,6 @@ int main(){
         // save workbooks
         FinCordsWkb.save(FinCordsWkbName);
         UtilWkb.save(UtilWkbName);
-    }
+    } 
 }
 
