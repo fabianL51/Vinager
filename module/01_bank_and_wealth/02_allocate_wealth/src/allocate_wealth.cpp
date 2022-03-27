@@ -50,9 +50,9 @@ int main(){
 
         // get bank data by checking if current cell A of current row has value
         if (i <= acc_last_row){
-            tempBank.Name = AssetWks.cell( "A" + std::to_string(i) ).value<std::string>(); // col A: bank name
-            tempBank.AssetType = AssetWks.cell( "B" + std::to_string(i) ).value<std::string>(); // col B: bank asset type
-            tempBank.Balance = AssetWks.cell( "D" + std::to_string(i) ).value<double>(); // col D: current balance
+            tempBank.Name = AssetWks.cell( "A", i).value<std::string>(); // col A: bank name
+            tempBank.AssetType = AssetWks.cell( "B", i).value<std::string>(); // col B: bank asset type
+            tempBank.Balance = AssetWks.cell( "D", i).value<double>(); // col D: current balance
             
             // update liquid and fixed asset sum
             if (tempBank.AssetType == "Fixed"){
@@ -68,8 +68,8 @@ int main(){
      
         // get wealth class data by checking if current cell H of current row has value
         if (i <= wealth_last_row){
-            tempWealthClass.Name = AssetWks.cell( "G" + std::to_string(i) ).value<std::string>(); // col G: wealth class name
-            tempWealthClass.Sum = AssetWks.cell( "I" + std::to_string(i) ).value<double>(); // col I: current balance
+            tempWealthClass.Name = AssetWks.cell( "G", i).value<std::string>(); // col G: wealth class name
+            tempWealthClass.Sum = AssetWks.cell( "I", i).value<double>(); // col I: current balance
             WealthClassVec.emplace_back(tempWealthClass);
         }
     }
@@ -211,33 +211,21 @@ int main(){
         // get rows for wealth class in Financial Statement sheet
         int WC_Alloc_current_row = 12;
         int WC_CF_current_row = UtilWks.cell("B3").value<int>();
+        xlnt::range_reference reborder_range;
 
         
         if (n_wealth + WC_Alloc_current_row - 1 > WC_CF_current_row - 3){
             FinStateWks.insert_rows(14, n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3);
             WC_CF_current_row += n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3;
 
-            std::cout << "G5 to J" << n_wealth + wealth_current_row<< std::endl;
-            // update borders in Assets sheet
-            xlnt::range_reference reborder_range = xlnt::range_reference("G", 5, "J", n_wealth + wealth_current_row);
-            AssetWks.range(reborder_range).border(data_border);
-            FinCordsWkb.save(FinCordsWkbName);
-
-            std::cout << "A14 to " << WC_CF_current_row - 3 << std::endl;
-            std::cin >> n_wealth;
             // update border in Financial sheet
             reborder_range = xlnt::range_reference("A", 14, "N", WC_CF_current_row - 3);
             FinStateWks.range(reborder_range).border(data_border);
-            FinCordsWkb.save(FinCordsWkbName);
-
-            std::cout << "A" << WC_CF_current_row + 1 << " to " <<  WC_CF_current_row + n_wealth << std::endl;
             reborder_range = xlnt::range_reference("A", WC_CF_current_row + 1, "N",  WC_CF_current_row + n_wealth);
             FinStateWks.range(reborder_range).border(data_border);
         }
 
-        FinCordsWkb.save(FinCordsWkbName);
         std::cout << WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
-        std::cin >> n_wealth;
         if (WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row) > 0){
             // clear cell containing old data in Assets sheet
             xlnt::range_reference delete_range = xlnt::range_reference("G", wealth_current_row + n_wealth, "J", wealth_current_row + n_wealth + 3);
@@ -252,18 +240,24 @@ int main(){
 
         // display in command prompt and store new wealth informations
         for (int i = 0; i < WealthClassVec.size(); i++){
-            
+
             // update the wealth information in Assets sheet
             // row 0 doesn't exist and row 1 is header, so row i + wealth current row
-            AssetWks.cell("G" + std::to_string(i + wealth_current_row)).value(WealthClassVec.at(i).Name); // col G: wealth class name
-            AssetWks.cell("H" + std::to_string(i + wealth_current_row)).value(WealthClassVec.at(i).Sum); // col H: start balance
-            AssetWks.cell("I" + std::to_string(i + wealth_current_row)).value(WealthClassVec.at(i).Sum); // col I: current balance
+            AssetWks.cell("G", i + wealth_current_row).value(WealthClassVec.at(i).Name); // col G: wealth class name
+            AssetWks.cell("H", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col H: start balance
+            AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: current balance
             // formula for change in balance
-            AssetWks.cell("J" +  std::to_string(i + wealth_current_row)).formula("=I" + std::to_string(i + wealth_current_row) + "-H" + std::to_string(i + wealth_current_row));
+            AssetWks.cell("J", i + wealth_current_row).formula("=I" + std::to_string(i + wealth_current_row) + "-H" + std::to_string(i + wealth_current_row));
+
+            // reborder current wealth data
+            if (i + wealth_current_row >= 4){
+                AssetWks.cell("G", i + wealth_current_row).border(data_border);
+                AssetWks.cell("H", i + wealth_current_row).format(AssetWks.cell("A4").format());
+            }
 
             // add wealth class name into Financial Statement sheet
-            FinStateWks.cell("A" + std::to_string(i + WC_Alloc_current_row)).value(WealthClassVec.at(i).Name);
-            FinStateWks.cell("A" + std::to_string(i + WC_CF_current_row)).formula("=A" + std::to_string(i + WC_Alloc_current_row));
+            FinStateWks.cell("A", i + WC_Alloc_current_row).value(WealthClassVec.at(i).Name);
+            FinStateWks.cell("A", i + WC_CF_current_row).formula("=A" + std::to_string(i + WC_Alloc_current_row));
             
             // display in command prompt
             std::cout << "Layer : " << WealthClassVec.at(i).Name << " : ";

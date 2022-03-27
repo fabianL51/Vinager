@@ -26,11 +26,11 @@ int main(){
         // update formula for gross income and total expenses as sum from Income and Expenses sheet
         col_string = xlnt::column_t::column_string_from_index(i);
         // gross income in 3rd row
-        FinStateWks.cell(col_string + "3").formula("=SUM(Income!" + col_string + ":" + col_string + ")");
+        FinStateWks.cell(col_string, 3).formula("=SUM(Income!" + col_string + ":" + col_string + ")");
         // total expenses in 4rd row
-        FinStateWks.cell(col_string + "4").formula("=SUM(Expenses!" + col_string + ":" + col_string + ")");
+        FinStateWks.cell(col_string, 4).formula("=SUM(Expenses!" + col_string + ":" + col_string + ")");
         // net income in 7th row
-        FinStateWks.cell(col_string + "7").formula("=" + col_string + "3+" + col_string + "4");
+        FinStateWks.cell(col_string, 7).formula("=" + col_string + "3+" + col_string + "4");
     }
 
     // add formula for yearly values

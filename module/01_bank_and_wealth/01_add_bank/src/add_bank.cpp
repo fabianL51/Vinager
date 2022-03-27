@@ -110,20 +110,20 @@ int main(){
         int current_row = UtilitesWks.cell("B4").value<int>();      
         // store bank data into worksheet
         // name cell for bank name in column A and one row after last_row 
-        AssetsWks.cell("A" + std::to_string(current_row)).value(bank.Name);
+        AssetsWks.cell("A", current_row).value(bank.Name);
         // asset type cell for current bank's balance in column B and one row after last_row
-        AssetsWks.cell("B" + std::to_string(current_row)).value(bank.AssetType);
+        AssetsWks.cell("B", current_row).value(bank.AssetType);
         // balance cell for start bank's balance in column C and one row after last_row
-        AssetsWks.cell("C" + std::to_string(current_row)).value(bank.Balance);   
+        AssetsWks.cell("C", current_row).value(bank.Balance);   
         // balance cell for current bank's balance in column D and one row after last_row
-        AssetsWks.cell("D" + std::to_string(current_row)).value(bank.Balance);
+        AssetsWks.cell("D", current_row).value(bank.Balance);
         // formula for change in balance in column E
-        AssetsWks.cell("E" + std::to_string(current_row)).formula("=D" + std::to_string(current_row) + "-C" + std::to_string(current_row));     
+        AssetsWks.cell("E", current_row).formula("=D" + std::to_string(current_row) + "-C" + std::to_string(current_row));     
         
         // prepare the border for next row in current row is not the 4th row
-        if (current_row > 4){
+        if (current_row >= 4){
             xlnt::border data_border = AssetsWks.cell("A4").border();
-            AssetsWks.range("A" + std::to_string(current_row + 1) + ":E" + std::to_string(current_row + 1)).border(data_border);
+            AssetsWks.range(xlnt::range_reference("A", current_row, "E", current_row)).border(data_border);
         }
         // Update the value in utilities workbook
         UtilitesWks.cell("B4").value(current_row + 1);
