@@ -203,40 +203,16 @@ int main(){
         WealthClassVec.emplace_back(Fixed);
         n_wealth = WealthClassVec.size();
         
-        // get border data
-        xlnt::border data_border = AssetWks.cell("A4").border();
-
         // reset values of current wealth row
         wealth_current_row = 3;
-        // get rows for wealth class in Financial Statement sheet
-        int WC_Alloc_current_row = 12;
-        int WC_CF_current_row = UtilWks.cell("B3").value<int>();
+        // delete unused cells
+        xlnt::range_reference delete_range = xlnt::range_reference("G", 4, "J", AssetWks.highest_row());
+        AssetWks.range(delete_range).clear_cells();
+        // reborder Assets sheet
+        xlnt::border range_border = create_data_border();
         xlnt::range_reference reborder_range;
-
-        
-        if (n_wealth + WC_Alloc_current_row - 1 > WC_CF_current_row - 3){
-            FinStateWks.insert_rows(14, n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3);
-            WC_CF_current_row += n_wealth + WC_Alloc_current_row - 1 - WC_CF_current_row + 3;
-
-            // update border in Financial sheet
-            reborder_range = xlnt::range_reference("A", 14, "N", WC_CF_current_row - 3);
-            FinStateWks.range(reborder_range).border(data_border);
-            reborder_range = xlnt::range_reference("A", WC_CF_current_row + 1, "N",  WC_CF_current_row + n_wealth);
-            FinStateWks.range(reborder_range).border(data_border);
-        }
-
-        std::cout << WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
-        if (WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row) > 0){
-            // clear cell containing old data in Assets sheet
-            xlnt::range_reference delete_range = xlnt::range_reference("G", wealth_current_row + n_wealth, "J", wealth_current_row + n_wealth + 3);
-            AssetWks.range(delete_range).clear_cells();
-            
-            // delete rows containing old data in Financial Statement sheet
-            FinStateWks.delete_rows(n_wealth + WC_Alloc_current_row, WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row));
-            WC_CF_current_row -= WC_CF_current_row - 2 - (n_wealth + WC_Alloc_current_row);
-            FinStateWks.delete_rows(WC_CF_current_row + n_wealth, 10);
-        }
-        
+        reborder_range = xlnt::range_reference("G", 4, "J", n_wealth + wealth_current_row - 1);
+        AssetWks.range(reborder_range).border(range_border);        
 
         // display in command prompt and store new wealth informations
         for (int i = 0; i < WealthClassVec.size(); i++){
@@ -249,15 +225,6 @@ int main(){
             // formula for change in balance
             AssetWks.cell("J", i + wealth_current_row).formula("=I" + std::to_string(i + wealth_current_row) + "-H" + std::to_string(i + wealth_current_row));
 
-            // reborder current wealth data
-            if (i + wealth_current_row >= 4){
-                AssetWks.cell("G", i + wealth_current_row).border(data_border);
-                AssetWks.cell("H", i + wealth_current_row).format(AssetWks.cell("A4").format());
-            }
-
-            // add wealth class name into Financial Statement sheet
-            FinStateWks.cell("A", i + WC_Alloc_current_row).value(WealthClassVec.at(i).Name);
-            FinStateWks.cell("A", i + WC_CF_current_row).formula("=A" + std::to_string(i + WC_Alloc_current_row));
             
             // display in command prompt
             std::cout << "Layer : " << WealthClassVec.at(i).Name << " : ";
@@ -274,12 +241,10 @@ int main(){
 
         // update rows in utilities
         UtilWks.cell("B5").value(wealth_current_row + n_wealth);
-        UtilWks.cell("B2").value(WC_Alloc_current_row + n_wealth);
-        UtilWks.cell("B3").value(WC_CF_current_row); 
 
         // save workbooks
         FinCordsWkb.save(FinCordsWkbName);
-        UtilWkb.save(UtilWkbName);
+        UtilWkb.save(UtilWkbName); 
     } 
 }
 
