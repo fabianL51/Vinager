@@ -10,98 +10,35 @@
 int main(){
 
     // initialize workbooks and worksheets
-    xlnt::workbook Wkb;
-    xlnt::worksheet AccWealthWks;
+    xlnt::workbook FinCordsWkb, UtilWkb;
+    xlnt::worksheet FinStateWks, AssetsWks, RecordsWks, UtilWks;
+    std::string FinCordsWkbName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
+    std::string UtilWkbName = "Utilities.xlsx";
 
-    // load workbook
-    std::string current_year = std::to_string(get_current_date_data("year"));
-    std::string WkbName =current_year + "_FinancialRecords.xlsx";
-    Wkb.load(WkbName);
-    AccWealthWks = Wkb.sheet_by_title("Accounts & Wealth");
+    // load workbooks
+    FinCordsWkb.load(FinCordsWkbName);
+    UtilWkb.load(UtilWkbName);
 
-    // get the last row of worksheet
-    int last_row = AccWealthWks.highest_row();
+    // load worksheets
+    FinStateWks = FinCordsWkb.sheet_by_title("Financial Statement");
+    AssetsWks = FinCordsWkb.sheet_by_title("Assets");
+    RecordsWks = FinCordsWkb.sheet_by_title("Records");
+    UtilWks = UtilWkb.sheet_by_title("Main");
 
+    // get the last row of both accounts and wealth
+    int acc_last_row = UtilWks.cell("B4").value<int>() - 1;
+    int wealth_current_row = UtilWks.cell("B5").value<int>();
+    int wealth_last_row = wealth_current_row - 1;
+
+    // iterate to get bank and wealth class data
     // initialize variables
     std::vector <Bank> BankVec;
     std::vector <Asset> WealthClassVec;
-    Bank tempBank;
-    Asset tempWealthClass;
 
-    // get banks and wealth data
-    for (int i = 2; i <= last_row; i++){
-        
-        // reinitialize temporary variables
-        tempBank, tempWealthClass;
-
-        // get bank data by checking if current cell A of current row has value
-        if (AccWealthWks.cell("A" + std::to_string(i)).has_value() == true){
-            tempBank.Name = AccWealthWks.cell( "A" + std::to_string(i) ).value<std::string>(); // col A: bank name
-            tempBank.AssetType = AccWealthWks.cell( "B" + std::to_string(i) ).value<std::string>(); // col B: bank asset type
-            tempBank.Balance = AccWealthWks.cell( "D" + std::to_string(i) ).value<double>(); // col D: current balance
-        }
-        else {
-            // if empty then name tempBank with error message
-            tempBank.Name = "21Err33";
-        }
-
-        // add bank to vector if tempBank contains valid data bank
-        if (tempBank.Name != "21Err33"){
-            BankVec.emplace_back(tempBank);
-        }
-     
-        // get wealth class data by checking if current cell H of current row has value
-        if (AccWealthWks.cell("H" + std::to_string(i)).has_value() == true){
-            tempWealthClass.Name = AccWealthWks.cell( "H" + std::to_string(i) ).value<std::string>(); // col H: wealth class name
-            tempWealthClass.Sum = AccWealthWks.cell( "J" + std::to_string(i) ).value<double>(); // col J: current balance
-        }
-        else {
-            // if empty then name tempBank with error message
-            tempWealthClass.Name = "42Err11";
-        }
-
-        // add wealth class to vector if tempBank contains valid data bank
-        if (tempWealthClass.Name != "42Err11"){
-            WealthClassVec.emplace_back(tempWealthClass);
-        }        
-    }
-
-    // update Wealth in Balance Sheet: starting at row 14 for wealth allocation and row 22 for cash flow
-    if (WealthClassVec.size() > 0){
-        xlnt::worksheet BalSheetWks = Wkb.sheet_by_title("Balance Sheet");
-        for (int i = 0; i <= WealthClassVec.size() - 1; i++){
-            BalSheetWks.cell("A" + std::to_string(i + 14)).value(WealthClassVec.at(i).Name);
-            BalSheetWks.cell("A" + std::to_string(i + 22)).formula("=A" + std::to_string(i + 14));
-        }
-    }
-    
-    // expand Bank column in Records sheet: 1st row starting at column G
-    // and fill in the starting details
-    if (BankVec.size() > 0){
-        xlnt::worksheet RecordsWks = Wkb.sheet_by_title("Records");
-        xlnt::column_t last_col;
-        xlnt::border header_border, data_border;
-
-        header_border = RecordsWks.cell("F1").border(); // border style of F1 for header
-        data_border = RecordsWks.cell("A2").border(); // border style of A2 for data
-
-        last_col.index = last_col.column_index_from_string("F"); // use column F as reference
-        for (int i = 0; i <= BankVec.size() - 1; i++){
-            // expand headers
-            RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "1").value(BankVec.at(i).Name);
-            RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "1").border(header_border);
-
-            // fill the starting balance for each bank
-            RecordsWks.cell(last_col.column_string_from_index(last_col.index + i + 1) + "2").value(BankVec.at(i).Balance);
-        }
-    
-        // fill starting cells 
-        RecordsWks.cell("A2").value(get_current_date()); // A2: Date
-        RecordsWks.cell("D2").value("Starting Point"); // D2: Detail
-        RecordsWks.range(xlnt::range_reference(last_col.column_string() + "2:" + RecordsWks.highest_column().column_string() + "2")).border(data_border);
-    }
-
-    // save workbook
-    Wkb.save(WkbName);
+    // get accounts and wealth classes
+    std::pair<std::vector <Bank>, std::vector <Asset>> bank_wealth_vec = get_accounts_wealth(AssetsWks, acc_last_row, wealth_last_row);
+    BankVec = bank_wealth_vec.first;
+    WealthClassVec = bank_wealth_vec.second;
+   
 }
 

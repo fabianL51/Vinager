@@ -36,48 +36,27 @@ int main(){
     // initialize variables
     std::vector <Bank> BankVec;
     std::vector <Asset> WealthClassVec;
-    Bank tempBank;
-    Asset tempWealthClass;
     double LiquidSum = 0;
     double FixedSum = 0;
     int reallocate = 0;
     bool AllocateWealth = true;
 
-    for (int i = 3; i <= std::max(acc_last_row, wealth_last_row); i++){
-        
-        // reinitialize temporary variables
-        tempBank, tempWealthClass;
-
-        // get bank data by checking if current cell A of current row has value
-        if (i <= acc_last_row){
-            tempBank.Name = AssetWks.cell( "A", i).value<std::string>(); // col A: bank name
-            tempBank.AssetType = AssetWks.cell( "B", i).value<std::string>(); // col B: bank asset type
-            tempBank.Balance = AssetWks.cell( "D", i).value<double>(); // col D: current balance
-            
-            // update liquid and fixed asset sum
-            if (tempBank.AssetType == "Fixed"){
-                FixedSum += tempBank.Balance;
-            }
-            else if (tempBank.AssetType == "Liquid"){
-                LiquidSum += tempBank.Balance;
-            }
-
-            // add bank to vector if tempBank contains valid data bank
-            BankVec.emplace_back(tempBank);
-        }
-     
-        // get wealth class data by checking if current cell H of current row has value
-        if (i <= wealth_last_row){
-            tempWealthClass.Name = AssetWks.cell( "G", i).value<std::string>(); // col G: wealth class name
-            tempWealthClass.Sum = AssetWks.cell( "I", i).value<double>(); // col I: current balance
-            WealthClassVec.emplace_back(tempWealthClass);
-        }
-    }
+    // get accounts and wealth classes
+    std::pair<std::vector <Bank>, std::vector <Asset>> bank_wealth_vec = get_accounts_wealth(AssetWks, acc_last_row, wealth_last_row);
+    BankVec = bank_wealth_vec.first;
+    WealthClassVec = bank_wealth_vec.second;
 
     // display bank data
     for (int i = 0; i <= BankVec.size() - 1; i++){
         std::cout << BankVec.at(i).Name << " -- " << BankVec.at(i).AssetType << " :";
         std::cout << std::fixed << std::setprecision(2) << BankVec.at(i).Balance << std::endl; 
+
+        if (BankVec.at(i).AssetType == "Liquid"){
+            LiquidSum += BankVec.at(i).Balance;
+        }
+        else if (BankVec.at(i).AssetType == "Fixed"){
+            FixedSum += BankVec.at(i).Balance;
+        }
     }
 
     // ask user if wealth class has already been allocated
@@ -139,8 +118,11 @@ int main(){
         }
 
         // allocate wealth class (only for liquid assets)
+
+        // initialize variables
         double confirm;
         double MaxLiquidWealth = LiquidSum;
+        Asset tempWealthClass;
 
         for (int i = 1; i <= n_wealth; i++){
 
