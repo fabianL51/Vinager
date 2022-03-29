@@ -14,7 +14,7 @@ add_executable(${ProjectId}
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "update_sheet_after_init")
+    OUTPUT_NAME "update_records_sheet")
 
 # get main Path
 get_filename_component(SubModulePath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)

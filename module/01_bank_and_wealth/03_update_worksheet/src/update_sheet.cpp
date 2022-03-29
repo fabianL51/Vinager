@@ -39,6 +39,36 @@ int main(){
     std::pair<std::vector <Bank>, std::vector <Asset>> bank_wealth_vec = get_accounts_wealth(AssetsWks, acc_last_row, wealth_last_row);
     BankVec = bank_wealth_vec.first;
     WealthClassVec = bank_wealth_vec.second;
-   
+
+    // check if accounts already included in Records sheet
+    int n_account_Rec = RecordsWks.highest_column().index - xlnt::column_t::column_index_from_string("F");
+
+    // update header in Records sheet if accounts aren't already initialized
+    if (BankVec.size() > n_account_Rec){
+
+        // prepare border of header and border of data number 2
+        xlnt::border header_border = RecordsWks.cell("F1").border();
+        xlnt::border second_row_border = RecordsWks.cell("F2").border();
+
+        int last_empty_index = xlnt::column_t::column_index_from_string(UtilWks.cell("B9").value<std::string>());
+
+        for (int i = n_account_Rec; i <= BankVec.size() - 1; i++){
+            
+            // add account name to header
+            RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 1).value(BankVec.at(i).Name);
+
+            // reborder header and second row
+            RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 1).border(header_border);
+            RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 2).border(second_row_border);
+            last_empty_index += 1;
+        }
+
+        // update information in Utilities.xls
+        UtilWks.cell("B9").value(xlnt::column_t::column_string_from_index(last_empty_index));
+    }
+    
+    // save workbooks
+    FinCordsWkb.save(FinCordsWkbName);
+    UtilWkb.save(UtilWkbName); 
 }
 

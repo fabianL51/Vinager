@@ -57,16 +57,16 @@ build CMakeFiles/03_update_worksheet.dir/src/update_sheet.cpp.obj: CXX_COMPILER_
 
 
 #############################################
-# Link the executable update_sheet_after_init.exe
+# Link the executable update_records_sheet.exe
 
-build update_sheet_after_init.exe: CXX_EXECUTABLE_LINKER__03_update_worksheet_ CMakeFiles/03_update_worksheet.dir/src/update_sheet.cpp.obj | D$:/Project/9_Vinager/lib/libxlnt.dll
+build update_records_sheet.exe: CXX_EXECUTABLE_LINKER__03_update_worksheet_ CMakeFiles/03_update_worksheet.dir/src/update_sheet.cpp.obj | D$:/Project/9_Vinager/lib/libxlnt.dll
   LINK_LIBRARIES = D:/Project/9_Vinager/lib/libxlnt.dll  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\03_update_worksheet.dir
-  POST_BUILD = cmd.exe /C "cd /D D:\Project\9_Vinager\module\01_bank_and_wealth\03_update_worksheet\build && C:\msys64\mingw64\bin\cmake.exe -E copy D:/Project/9_Vinager/module/01_bank_and_wealth/03_update_worksheet/build/update_sheet_after_init.exe D:/Project/9_Vinager/exe"
+  POST_BUILD = cmd.exe /C "cd /D D:\Project\9_Vinager\module\01_bank_and_wealth\03_update_worksheet\build && C:\msys64\mingw64\bin\cmake.exe -E copy D:/Project/9_Vinager/module/01_bank_and_wealth/03_update_worksheet/build/update_records_sheet.exe D:/Project/9_Vinager/exe"
   PRE_LINK = cd .
-  TARGET_FILE = update_sheet_after_init.exe
-  TARGET_IMPLIB = libupdate_sheet_after_init.dll.a
-  TARGET_PDB = update_sheet_after_init.exe.dbg
+  TARGET_FILE = update_records_sheet.exe
+  TARGET_IMPLIB = libupdate_records_sheet.dll.a
+  TARGET_PDB = update_records_sheet.exe.dbg
 
 
 #############################################
@@ -95,7 +95,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build 03_update_worksheet: phony update_sheet_after_init.exe
+build 03_update_worksheet: phony update_records_sheet.exe
 
 # =============================================================================
 # Folder targets.
@@ -105,7 +105,7 @@ build 03_update_worksheet: phony update_sheet_after_init.exe
 #############################################
 # Folder: D:/Project/9_Vinager/module/01_bank_and_wealth/03_update_worksheet/build
 
-build all: phony update_sheet_after_init.exe
+build all: phony update_records_sheet.exe
 
 # =============================================================================
 # Built-in targets
