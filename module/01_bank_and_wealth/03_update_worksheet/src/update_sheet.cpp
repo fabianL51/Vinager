@@ -40,6 +40,8 @@ int main(){
     BankVec = bank_wealth_vec.first;
     WealthClassVec = bank_wealth_vec.second;
 
+    /* update accounts in Records sheet */
+
     // check if accounts already included in Records sheet
     int n_account_Rec = RecordsWks.highest_column().index - xlnt::column_t::column_index_from_string("F");
 
@@ -65,6 +67,49 @@ int main(){
 
         // update information in Utilities.xls
         UtilWks.cell("B9").value(xlnt::column_t::column_string_from_index(last_empty_index));
+    }
+
+    /* update wealth class in Financial Statement sheet */
+
+    // get the rows data
+    int first_row_CF = UtilWks.cell("B3").value<int>();
+    int start_row_Alloc = UtilWks.cell("B2").value<int>();
+
+    // calculate number of missing row: 
+    // start_row_Alloc + WealthClassVec.size() -> rows needed for all wealth class with an empty row to cash flow field
+    // first_row_CF - 2 -> last row of allocation field
+    int missing_rows = start_row_Alloc + WealthClassVec.size() - (first_row_CF - 2);
+
+    // check if rows has to be inserted
+    if (missing_rows > 0){
+        
+        // insert row at start_row_Alloc + 1
+        FinStateWks.insert_rows(start_row_Alloc + 1, missing_rows);
+        first_row_CF += missing_rows;
+        
+        // reborder new rows: careful: bordering already bordered cells may destroy worksheet!
+        xlnt::border border_data = create_data_border(); // create border with thin line
+        // allocation fields
+        // start bordering at one row after start row and end at 2 row before end of allocation field
+        FinStateWks.range(xlnt::range_reference("A", start_row_Alloc + 1, "N", first_row_CF - 4)).border(border_data);
+        // cash flow fields
+        FinStateWks.range(xlnt::range_reference("A", FinStateWks.highest_row() + 1, "N", first_row_CF + WealthClassVec.size() - 1)).border(border_data);
+
+    }
+
+    // get the index of already added wealth class
+    int n_start_wc = start_row_Alloc - 12; // first data is at 12th row
+
+    // remember: 2nd index means the third data in vector
+    for (int i = n_start_wc; i <= WealthClassVec.size() - 1; i++){
+
+        // add name in both Allocation and Cash Flow
+        FinStateWks.cell("A", start_row_Alloc).value(WealthClassVec.at(i).Name);
+        FinStateWks.cell("A", first_row_CF + i).value(WealthClassVec.at(i).Name);
+
+        // add start_row_alloc by one
+        start_row_Alloc += 1;
+        
     }
     
     // save workbooks
