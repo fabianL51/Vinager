@@ -76,42 +76,43 @@ int main(){
     int start_row_Alloc = UtilWks.cell("B2").value<int>();
 
     // calculate number of missing row: 
-    // start_row_Alloc + WealthClassVec.size() -> rows needed for all wealth class with an empty row to cash flow field
+    // 12 + WealthClassVec.size() -> rows needed for all wealth class with an empty row to cash flow field
     // first_row_CF - 2 -> last row of allocation field
-    int missing_rows = start_row_Alloc + WealthClassVec.size() - (first_row_CF - 2);
+    int missing_rows = 12 + WealthClassVec.size() - (first_row_CF - 2);
 
     // check if rows has to be inserted
     if (missing_rows > 0){
         
-        // insert row at start_row_Alloc + 1
-        FinStateWks.insert_rows(start_row_Alloc + 1, missing_rows);
+        // insert row at start_row_Alloc
+        FinStateWks.insert_rows(start_row_Alloc, missing_rows);
         first_row_CF += missing_rows;
-        
+
         // reborder new rows: careful: bordering already bordered cells may destroy worksheet!
         xlnt::border border_data = create_data_border(); // create border with thin line
-        // allocation fields
-        // start bordering at one row after start row and end at 2 row before end of allocation field
-        FinStateWks.range(xlnt::range_reference("A", start_row_Alloc + 1, "N", first_row_CF - 4)).border(border_data);
+        // allocation fields: 
+        // example start_row_alloc = 12, missing_rows = 2, unbordered rows are 12th to 13th (2 rows), not 12th to 14th (3 rows)
+        FinStateWks.range(xlnt::range_reference("A", start_row_Alloc, "N", start_row_Alloc + missing_rows - 1)).border(border_data);
         // cash flow fields
         FinStateWks.range(xlnt::range_reference("A", FinStateWks.highest_row() + 1, "N", first_row_CF + WealthClassVec.size() - 1)).border(border_data);
 
     }
-
-    // get the index of already added wealth class
-    int n_start_wc = start_row_Alloc - 12; // first data is at 12th row
-
+    
     // remember: 2nd index means the third data in vector
-    for (int i = n_start_wc; i <= WealthClassVec.size() - 1; i++){
+    for (int i = 0; i <= WealthClassVec.size() - 1; i++){
 
         // add name in both Allocation and Cash Flow
-        FinStateWks.cell("A", start_row_Alloc).value(WealthClassVec.at(i).Name);
+        FinStateWks.cell("A", 12 + i).value(WealthClassVec.at(i).Name); // first row for allocation is the 12th row
         FinStateWks.cell("A", first_row_CF + i).value(WealthClassVec.at(i).Name);
 
         // add start_row_alloc by one
         start_row_Alloc += 1;
         
     }
-    
+
+    // update rows in Util
+    UtilWks.cell("B3").value(first_row_CF);
+    UtilWks.cell("B2").value(start_row_Alloc);
+
     // save workbooks
     FinCordsWkb.save(FinCordsWkbName);
     UtilWkb.save(UtilWkbName); 
