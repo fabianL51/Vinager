@@ -94,9 +94,19 @@ int main(){
         FinStateWks.range(xlnt::range_reference("A", start_row_Alloc, "N", start_row_Alloc + missing_rows - 1)).border(border_data);
         // cash flow fields
         FinStateWks.range(xlnt::range_reference("A", FinStateWks.highest_row() + 1, "N", first_row_CF + WealthClassVec.size() - 1)).border(border_data);
+    }
+    else if (missing_rows < 0){
 
+        // delete rows of allocation
+        FinStateWks.delete_rows(12 + WealthClassVec.size() - 1, std::abs(missing_rows));
+        first_row_CF += missing_rows; // reduce by deleted rows
+        
+        // remove cells of cash flow
+        FinStateWks.range(xlnt::range_reference("A", first_row_CF + WealthClassVec.size(), "N", FinStateWks.highest_row())).clear_cells();
     }
     
+    start_row_Alloc = 12; // always reset start row for allocation before iterating
+
     // remember: 2nd index means the third data in vector
     for (int i = 0; i <= WealthClassVec.size() - 1; i++){
 
