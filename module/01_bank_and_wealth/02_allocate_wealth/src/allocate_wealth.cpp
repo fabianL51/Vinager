@@ -74,9 +74,7 @@ int main(){
         std::cout << "Press 1 to reallocate wealth and any other keys to cancel ";
         std::cin >> reallocate;
 
-        if (reallocate != 1){
-            AllocateWealth = false;
-        }
+        AllocateWealth = reallocate == 1;
     }
 
     if (AllocateWealth == true){
@@ -95,23 +93,17 @@ int main(){
         // checking if the input starting money is valid
         std::cout << "Set the number of wealth classes for liquid assets ";
         while (exit_loop == 0){
+            // clear the input
+            std::cin.clear();
+            while (std::cin.get() != '\n') ;
             // begin loop as long as exit_loop is false
             if (std::cin >> n_wealth){
-                if (n_wealth > 0){
                 // n_wealth must be a real number to exit loop
-                exit_loop = 1;
-                }
-                
+                exit_loop = n_wealth > 0;
             }
             if (exit_loop == 0) {
                 // if n_wealth invalid then inform the user
-                std::cout << "Invalid number of wealth classes... Set the number of wealth classes";
-                // clear the input for n_wealth
-                std::cin.clear();
-                // set exit_loop to zero
-                exit_loop = 0;
-                // empty loop and ask user to give a new value for n_wealth
-                while (std::cin.get() != '\n') ;
+                std::cout << "Invalid number of wealth classes.";
             }
             std::cout << std::endl; // empty line for better display in command window
 
@@ -133,16 +125,19 @@ int main(){
             std::cout << "Set the name of the wealth class no. " << std::to_string(i) << ": ";
             std::getline(std::cin >> std::ws, tempWealthClass.Name);
             
-            // ask the amount of money to be allocated to current class
-            std::cout << std::endl << "How many money of liquid wealth should be allocated to " << tempWealthClass.Name << " ";
-            std::cout << std::fixed << std::setprecision(2) << "(maximum available liquid wealth = " << MaxLiquidWealth << ") : ";
+            
 
             // make sure user input a validate number
             exit_loop = false;
             while (exit_loop == 0){
-                // begin loop as long as exit_loop is false
+                // ask the amount of money to be allocated to current class
+                std::cout << std::endl << "How many money of liquid wealth should be allocated to " << tempWealthClass.Name << " ";
+                std::cout << std::fixed << std::setprecision(2) << "(maximum available liquid wealth = " << MaxLiquidWealth << ") : ";
+                // clear the input
+                std::cin.clear();
+                while (std::cin.get() != '\n') ;
+                // check input validity
                 if (std::cin >> tempWealthClass.Sum){
-                    
                     // round wealth class sum and maximum liquid wealth less to prevent false checking
                     tempWealthClass.Sum = round( tempWealthClass.Sum * 100.0 ) / 100.0;
                     MaxLiquidWealth = round( MaxLiquidWealth * 100.0 ) / 100.0;
@@ -153,7 +148,7 @@ int main(){
                         std::cout << std::fixed << std::setprecision(2) << MaxLiquidWealth;
                         std::cout << " will be allocated to " << tempWealthClass.Name  << std::endl;
                         std::cout << "Type 1 to confirm or any other keys to cancel ";
-                            std::cin >> confirm;
+                        std::cin >> confirm;
                             if (confirm == 1){
                                 MaxLiquidWealth -= tempWealthClass.Sum;
                                 exit_loop = 1;
@@ -161,15 +156,12 @@ int main(){
                         }
                     }
                     if (exit_loop == 0) {
-                        // if wealth class percentage invalid then inform the user
-                        std::cout << std::endl << "How many money of liquid wealth should be allocated to " << tempWealthClass.Name << " ";
-                        std::cout << std::fixed << std::setprecision(2) << "(maximum available liquid wealth = " << MaxLiquidWealth << ") : ";
-                        // clear the input for wealth class percentage
-                        std::cin.clear();
-                        // set exit_loop to zero
-                        exit_loop = 0;
-                        // empty loop and ask user to give a new value for wealth class percentage
-                        while (std::cin.get() != '\n') ;
+                        if (tempWealthClass.Sum > MaxLiquidWealth){
+                            std::cout << "Invalid amount of allocation! Maximal available amount is " << MaxLiquidWealth << std::endl;
+                        }
+                        else if (tempWealthClass.Sum < 0){
+                            std::cout << "Invalid amount of allocation!" << std::endl;
+                        }
                     }
                     std::cout << std::endl; // empty line for better display in command window
                 }
@@ -206,13 +198,10 @@ int main(){
             AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: current balance
             // formula for change in balance
             AssetWks.cell("J", i + wealth_current_row).formula("=I" + std::to_string(i + wealth_current_row) + "-H" + std::to_string(i + wealth_current_row));
-
             
             // display in command prompt
             std::cout << "Layer : " << WealthClassVec.at(i).Name << " : ";
             std::cout << std::fixed << std::setprecision(2) << WealthClassVec.at(i).Sum << std::endl; 
-
-
         }
 
         // save both fixed and liquid assets in column L and M

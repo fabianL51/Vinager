@@ -1,0 +1,5 @@
+# ninja log v5
+5	954	6709859169556180	CMakeFiles/01_process_transaction.dir/src/process_transaction.cpp.obj	fcf678c725e7e5ed
+955	1170	6709859171282437	process_transaction.exe	d293f1069b53dba7
+4	907	6709863095359953	CMakeFiles/01_process_transaction.dir/src/process_transaction.cpp.obj	fcf678c725e7e5ed
+908	1102	6709863097099043	process_transaction.exe	d293f1069b53dba7

@@ -44,64 +44,50 @@ int main(){
     // store user input for bank class
     if (bank.Name != "stop"){
 
-        // ask the user in command window for the starting money of the bank
-        std::cout << "Insert the start amount of money for " << bank.Name << " : ";
-        
         // checking if the input starting money is valid
         bool exit_loop = false; // variable exit_loop is bool in case user give invalid input
-        while (exit_loop == 0){
+        while (exit_loop == false){
+            // ask the user in command window for the starting money of the bank
+            std::cout << "Insert the start amount of money for " << bank.Name << " : ";
+            // clear the input
+            std::cin.clear();
+            while (std::cin.get() != '\n') ;
             // begin loop as long as exit_loop is false
             if (std::cin >> bank.Balance){
                 // if input value is valid then set exit_loop to true to exit loop
-                exit_loop = 1;
+                exit_loop = bank.Balance >= 0;
             }
             if (exit_loop == 0) {
                 // if input value invalid then inform the user
-                std::cout << "Invalid amount of money, please insert a valid number for the start amount of money.";
-                // clear the input
-                std::cin.clear();
-                // set exit_loop to zero
-                exit_loop = 0;
-                // empty loop and ask user to give a new value
-                while (std::cin.get() != '\n') ;
+                std::cout << "Invalid amount of money.";               
             }
             std::cout << std::endl; // empty line for better display in command window
-
         }
 
-        // ask the user in command window for the asset type of the bank account
-        std::cout << "Insert current asset type " << bank.Name << std::endl;
-        std::cout << "Insert 'L' for liquid asset and 'F' for fixed asset :" ;
-
+        
         // checking if the input asset_type is valid
         exit_loop = false; // variable exit_loop is bool in case user give invalid input
-        while (exit_loop == 0){
-            // begin loop as long as exit_loop is false
-            if (std::cin >> bank.AssetType){
-                if (bank.AssetType == "L" or bank.AssetType == "F"){
-                    // if input for asset_type is valid then set exit loop as true
-                    exit_loop = 1;
-                    // change asset type from abbreviations 
-                    if (bank.AssetType == "L"){
-                        bank.AssetType = "Liquid";
-                    }
-                    else if (bank.AssetType == "F"){
-                        bank.AssetType = "Fixed";
-                    }
-                }
+        while (exit_loop == false){
+            // ask the user in command window for the asset type of the bank account
+            std::cout << "Insert current asset type " << bank.Name << std::endl << "Insert 'L' for liquid asset and 'F' for fixed asset :" << std::endl;
+            // clear the input
+            std::cin.clear();
+            while (std::cin.get() != '\n') ;
+            // get input
+            std::getline(std::cin, bank.AssetType);
+            // if input value is valid then set exit_loop to true to exit loop
+            exit_loop = bank.AssetType == "L" or bank.AssetType == "F";
+            // define asset type if input is valid
+            if (bank.AssetType == "L"){
+                bank.AssetType = "Liquid";
             }
-            if (exit_loop == 0) {
-                // if asset_type invalid then inform the user
-                std::cout << "Invalid asset type... Please insert a valid asset type" << std::endl;
-                std::cout << "Insert 'L' for liquid asset and 'F' for fixed asset :" ;
-                // clear the input for asset_type
-                std::cin.clear();
-                // set exit_loop to zero
-                exit_loop = 0;
-                // empty loop and ask user to give a new value for asset_type
-                while (std::cin.get() != '\n') ;
+            else if (bank.AssetType == "F"){
+                bank.AssetType = "Fixed";
             }
-            std::cout << std::endl; // empty line for better display in command window
+            // warning if input is invalid
+            if (exit_loop == false){
+                std::cout << "Invalid asset type." << std::endl;
+            }
         }
 
         // get last unempty row by getting the value from utilities
