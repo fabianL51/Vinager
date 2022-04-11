@@ -11,7 +11,7 @@ int main(){
 
     // initialize workbooks and worksheets
     xlnt::workbook FinCordsWkb, UtilWkb;
-    xlnt::worksheet FinStateWks, AssetsWks, RecordsWks, UtilWks;
+    xlnt::worksheet IncStateWks, AssetsWks, RecordsWks, UtilWks;
     std::string FinCordsWkbName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
     std::string UtilWkbName = "Utilities.xlsx";
 
@@ -20,7 +20,7 @@ int main(){
     UtilWkb.load(UtilWkbName);
 
     // load worksheets
-    FinStateWks = FinCordsWkb.sheet_by_title("Financial Statement");
+    IncStateWks = FinCordsWkb.sheet_by_title("Income Statement");
     AssetsWks = FinCordsWkb.sheet_by_title("Assets");
     RecordsWks = FinCordsWkb.sheet_by_title("Records");
     UtilWks = UtilWkb.sheet_by_title("Main");
@@ -40,7 +40,6 @@ int main(){
     BankVec = bank_wealth_vec.first;
     WealthClassVec = bank_wealth_vec.second;
 
-    /* update accounts in Records sheet */
 
     // check if accounts already included in Records sheet
     int n_account_Rec = RecordsWks.highest_column().index - xlnt::column_t::column_index_from_string("F");
@@ -51,77 +50,25 @@ int main(){
         // prepare border of header and border of data number 2
         xlnt::border header_border = RecordsWks.cell("F1").border();
         xlnt::border second_row_border = RecordsWks.cell("F2").border();
+        xlnt::border third_row_border = RecordsWks.cell("F3").border();
 
-        int last_empty_index = xlnt::column_t::column_index_from_string(UtilWks.cell("B9").value<std::string>());
+        int last_empty_index = xlnt::column_t::column_index_from_string(UtilWks.cell("B7").value<std::string>());
 
         for (int i = n_account_Rec; i <= BankVec.size() - 1; i++){
             
             // add account name to header
             RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 1).value(BankVec.at(i).Name);
 
-            // reborder header and second row
+            // reborder header and second, third row
             RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 1).border(header_border);
             RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 2).border(second_row_border);
+            RecordsWks.cell(xlnt::column_t::column_string_from_index(last_empty_index), 3).border(third_row_border);
             last_empty_index += 1;
         }
 
         // update information in Utilities.xls
-        UtilWks.cell("B9").value(xlnt::column_t::column_string_from_index(last_empty_index));
+        UtilWks.cell("B7").value(xlnt::column_t::column_string_from_index(last_empty_index));
     }
-
-    /* update wealth class in Financial Statement sheet */
-
-    // get the rows data
-    int first_row_CF = UtilWks.cell("B3").value<int>();
-    int start_row_Alloc = UtilWks.cell("B2").value<int>();
-
-    // calculate number of missing row: 
-    // 12 + WealthClassVec.size() -> rows needed for all wealth class with an empty row to cash flow field
-    // first_row_CF - 2 -> last row of allocation field
-    int missing_rows = 12 + WealthClassVec.size() - (first_row_CF - 2);
-
-    // check if rows has to be inserted
-    if (missing_rows > 0){
-        
-        // insert row at start_row_Alloc
-        FinStateWks.insert_rows(start_row_Alloc, missing_rows);
-        first_row_CF += missing_rows;
-
-        // reborder new rows: careful: bordering already bordered cells may destroy worksheet!
-        xlnt::border border_data = create_data_border(); // create border with thin line
-        // allocation fields: 
-        // example start_row_alloc = 12, missing_rows = 2, unbordered rows are 12th to 13th (2 rows), not 12th to 14th (3 rows)
-        FinStateWks.range(xlnt::range_reference("A", start_row_Alloc, "N", start_row_Alloc + missing_rows - 1)).border(border_data);
-        // cash flow fields
-        FinStateWks.range(xlnt::range_reference("A", FinStateWks.highest_row() + 1, "N", first_row_CF + WealthClassVec.size() - 1)).border(border_data);
-    }
-    else if (missing_rows < 0){
-
-        // delete rows of allocation
-        FinStateWks.delete_rows(12 + WealthClassVec.size() - 1, std::abs(missing_rows));
-        first_row_CF += missing_rows; // reduce by deleted rows
-        
-        // remove cells of cash flow
-        FinStateWks.range(xlnt::range_reference("A", first_row_CF + WealthClassVec.size(), "N", FinStateWks.highest_row())).clear_cells();
-    }
-    
-    start_row_Alloc = 12; // always reset start row for allocation before iterating
-
-    // remember: 2nd index means the third data in vector
-    for (int i = 0; i <= WealthClassVec.size() - 1; i++){
-
-        // add name in both Allocation and Cash Flow
-        FinStateWks.cell("A", 12 + i).value(WealthClassVec.at(i).Name); // first row for allocation is the 12th row
-        FinStateWks.cell("A", first_row_CF + i).value(WealthClassVec.at(i).Name);
-
-        // add start_row_alloc by one
-        start_row_Alloc += 1;
-        
-    }
-
-    // update rows in Util
-    UtilWks.cell("B3").value(first_row_CF);
-    UtilWks.cell("B2").value(start_row_Alloc);
 
     // save workbooks
     FinCordsWkb.save(FinCordsWkbName);

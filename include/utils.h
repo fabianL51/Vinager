@@ -49,7 +49,8 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
         // get wealth class data by checking row is not the last row of wealth
         if (i <= Wea_lr){
             tempWealthClass.Name = AssetWks.cell( "G", i).value<std::string>(); // col G: wealth class name
-            tempWealthClass.Sum = AssetWks.cell( "I", i).value<double>(); // col I: current balance
+            tempWealthClass.PercentAllocation = AssetWks.cell("H",i).value<double>(); // col H: percentage allocation
+            tempWealthClass.Sum = AssetWks.cell( "J", i).value<double>(); // col J: current balance
             WealthClassVec.emplace_back(tempWealthClass);
         }
     }

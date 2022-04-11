@@ -9,4 +9,5 @@ class Asset{
     public:  
         std::string Name;
         double Sum = 0;
+        double PercentAllocation;
 };
