@@ -6,6 +6,8 @@
 #include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include "Banks.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
+#include <cctype> // for uppercase
+#include <locale> // for comma as decimal
 
 inline bool file_exists (const std::string& name) {
     /* This functions check if a file exists */
@@ -32,6 +34,7 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
     std::vector <Asset> WealthClassVec;
     Bank tempBank;
     Asset tempWealthClass;
+    std::setlocale(LC_ALL, "de_DE");
 
     for (int i = 3; i <= std::max(Acc_lr, Wea_lr); i++){
         
@@ -56,4 +59,47 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
     }
 
     return std::make_pair(BankVec, WealthClassVec);
+}
+
+std::vector <Bank> get_account_codenames(std::vector <Bank> BankVec){
+
+    // preallocate variables to derive codenames
+    int middle_index;
+    std::string TempCodeName;
+
+    // iterate all members of bank vectors
+    for(int i = 0; i < BankVec.size(); i ++){
+
+        // clear temporary codenames storage
+        TempCodeName.clear();
+        // get the index for middle character
+        middle_index = std::round(BankVec.at(i).Name.length() / 2);
+        // build codename
+        // first character
+        TempCodeName.push_back(BankVec.at(i).Name[0]);
+        // middle character
+        TempCodeName.push_back(toupper(BankVec.at(i).Name[middle_index]));
+        // last character
+        TempCodeName.push_back(toupper(BankVec.at(i).Name[BankVec.at(i).Name.length()-1]));
+        // current index
+        TempCodeName.append(std::to_string(i + 1));
+        // store codename at bank vector 
+        BankVec.at(i).CodeName = TempCodeName;
+    }
+
+    return BankVec;
+}
+
+bool isValidCodename(std::vector <Bank> BankVec, std::string InputCodeName){
+
+    bool valid_codename = false;
+    // iterate through bank vector
+    for (auto Bank: BankVec){
+        if (Bank.CodeName == InputCodeName){
+            valid_codename = true;
+            break;
+        }
+    }
+
+    return valid_codename;
 }

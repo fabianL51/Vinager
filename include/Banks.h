@@ -13,4 +13,5 @@ class Bank{
         std::string Name;
         double Balance;
         std::string AssetType;
+        std::string CodeName;
 };

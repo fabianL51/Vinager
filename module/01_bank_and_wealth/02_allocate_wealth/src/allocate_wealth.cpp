@@ -47,15 +47,15 @@ int main(){
     WealthClassVec = bank_wealth_vec.second;
 
     // display bank data
-    for (int i = 0; i <= BankVec.size() - 1; i++){
-        std::cout << BankVec.at(i).Name << " -- " << BankVec.at(i).AssetType << " :";
-        std::cout << std::fixed << std::setprecision(2) << BankVec.at(i).Balance << std::endl; 
+    for (auto Bank: BankVec){
+        std::cout << Bank.Name << " -- " << Bank.AssetType << " :";
+        std::cout << std::fixed << std::setprecision(2) << Bank.Balance << std::endl; 
 
-        if (BankVec.at(i).AssetType == "Liquid"){
-            LiquidSum += BankVec.at(i).Balance;
+        if (Bank.AssetType == "Liquid"){
+            LiquidSum += Bank.Balance;
         }
-        else if (BankVec.at(i).AssetType == "Fixed"){
-            FixedSum += BankVec.at(i).Balance;
+        else if (Bank.AssetType == "Fixed"){
+            FixedSum += Bank.Balance;
         }
     }
 
@@ -65,10 +65,10 @@ int main(){
         std::cout << "Wealth might have already been allocated" << std::endl;
 
             // display current wealth class
-            for (int i = 0; i <= WealthClassVec.size() - 1; i++){
-            std::cout << "Layer: " << WealthClassVec.at(i).Name << " : " ;
-            std::cout << std::fixed << std::setprecision(2) << WealthClassVec.at(i).Sum << std::endl; 
-        }
+            for (auto WealthClass:WealthClassVec){
+                std::cout << "Layer: " << WealthClass.Name << " : ";
+                std::cout << std::fixed << std::setprecision(2) << WealthClass.Sum << std::endl; 
+            }
 
         // ask user whether the wealth should be new allocated
         std::cout << "Press 1 to reallocate wealth and any other keys to cancel ";

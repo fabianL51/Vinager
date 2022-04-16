@@ -12,7 +12,7 @@ int main(){
 
     // initialize workbooks and worksheets
     xlnt::workbook FinCordsWkb, UtilWkb;
-    xlnt::worksheet FinStateWks, AssetsWks, RecordsWks, UtilWks;
+    xlnt::worksheet IncStateWks, AssetsWks, RecordsWks, UtilWks;
     std::string FinCordsWkbName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
     std::string UtilWkbName = "Utilities.xlsx";
 
@@ -21,7 +21,7 @@ int main(){
     UtilWkb.load(UtilWkbName);
 
     // load worksheets
-    FinStateWks = FinCordsWkb.sheet_by_title("Financial Statement");
+    IncStateWks = FinCordsWkb.sheet_by_title("Income Statement");
     AssetsWks = FinCordsWkb.sheet_by_title("Assets");
     RecordsWks = FinCordsWkb.sheet_by_title("Records");
     UtilWks = UtilWkb.sheet_by_title("Main");
@@ -35,24 +35,26 @@ int main(){
     // initialize variables
     std::vector <Bank> BankVec;
     std::vector <Asset> WealthClassVec;
+    std::vector <std::string> CodeNames;
 
     // get accounts and wealth classes
     std::pair<std::vector <Bank>, std::vector <Asset>> bank_wealth_vec = get_accounts_wealth(AssetsWks, acc_last_row, wealth_last_row);
     BankVec = bank_wealth_vec.first;
     WealthClassVec = bank_wealth_vec.second;
 
+    // get accounts codenames
+    BankVec = get_account_codenames(BankVec);
+
     // display all accounts
     std::cout << "------------- Current accounts balance ----------" << std::endl;
-    for (int i = 0; i <= BankVec.size() - 1; i++){
-
-        std::cout << BankVec.at(i).Name << ": " << BankVec.at(i).Balance << std::endl;
+    for (auto Bank: BankVec){
+        std::cout << Bank.Name << "(" << Bank.CodeName << ") : " << Bank.Balance << std::endl;
     }
 
-    // display all accounts
+    // display all wealth class
     std::cout << "------------- Current wealth class balance ----------" << std::endl;
-    for (int i = 0; i <= WealthClassVec.size() - 1; i++){
-
-        std::cout << WealthClassVec.at(i).Name << ": " << WealthClassVec.at(i).Sum << std::endl;
+    for (auto WealthClass: WealthClassVec){
+        std::cout << WealthClass.Name << ": " << WealthClass.Sum << std::endl;
     }
 
     std::cout << "------------------------------------------------------" << std::endl;
@@ -67,6 +69,22 @@ int main(){
         valid_transaction_type = transaction_type == "I" or transaction_type == "E" or transaction_type == "T";
     }
 
+    // process by transaction type
+    if (transaction_type == "T"){
+        // interaccount transfers
+        std::cout << "Interaccount transfers selected" << std::endl;
+
+        bool valid_giver_acc = false;
+        std::string giver_acc_codename;
+        while (valid_giver_acc == false){
+            std::cout << "Enter the codename of the giver account" << std::endl;
+            for (auto Bank: BankVec){
+                std::cout << "Type " << Bank.CodeName << " for " << Bank.Name << std::endl;
+            }
+            std::getline(std::cin, giver_acc_codename);
+            valid_giver_acc = isValidCodename(BankVec, giver_acc_codename);
+        }
+    }
 
     
 }
