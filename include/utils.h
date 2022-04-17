@@ -7,7 +7,6 @@
 #include "Banks.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
 #include <cctype> // for uppercase
-#include <locale> // for comma as decimal
 
 inline bool file_exists (const std::string& name) {
     /* This functions check if a file exists */
@@ -34,7 +33,7 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
     std::vector <Asset> WealthClassVec;
     Bank tempBank;
     Asset tempWealthClass;
-    std::setlocale(LC_ALL, "de_DE");
+    // std::setlocale(LC_ALL, "de_DE");
 
     for (int i = 3; i <= std::max(Acc_lr, Wea_lr); i++){
         
@@ -54,7 +53,8 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
             tempWealthClass.Name = AssetWks.cell( "G", i).value<std::string>(); // col G: wealth class name
             tempWealthClass.PercentAllocation = AssetWks.cell("H",i).value<double>(); // col H: percentage allocation
             tempWealthClass.Sum = AssetWks.cell( "J", i).value<double>(); // col J: current balance
-            WealthClassVec.emplace_back(tempWealthClass);
+            std::cout << AssetWks.cell( "J", i).formula() << std::endl;
+                WealthClassVec.emplace_back(tempWealthClass);
         }
     }
 
