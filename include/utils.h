@@ -7,6 +7,7 @@
 #include "Banks.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
 #include <cctype> // for uppercase
+#include <map> // for mapping
 
 inline bool file_exists (const std::string& name) {
     /* This functions check if a file exists */
@@ -15,6 +16,8 @@ inline bool file_exists (const std::string& name) {
 }
 
 xlnt::border create_data_border (){
+
+    /* This function creates border for data type */
     
     xlnt::border border;
     xlnt::border::border_property border_prop;
@@ -28,6 +31,8 @@ xlnt::border create_data_border (){
 }
 
 std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::worksheet AssetWks, int Acc_lr, int Wea_lr){
+
+    /* This function gets the accounts and wealth classes through iterating in Asset sheets */
 
     std::vector <Bank> BankVec;
     std::vector <Asset> WealthClassVec;
@@ -53,8 +58,7 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
             tempWealthClass.Name = AssetWks.cell( "G", i).value<std::string>(); // col G: wealth class name
             tempWealthClass.PercentAllocation = AssetWks.cell("H",i).value<double>(); // col H: percentage allocation
             tempWealthClass.Sum = AssetWks.cell( "J", i).value<double>(); // col J: current balance
-            std::cout << AssetWks.cell( "J", i).formula() << std::endl;
-                WealthClassVec.emplace_back(tempWealthClass);
+            WealthClassVec.emplace_back(tempWealthClass);
         }
     }
 
@@ -63,9 +67,11 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
 
 std::vector <Bank> get_account_codenames(std::vector <Bank> BankVec){
 
+    /* This function creates codenames for each account */
+
     // preallocate variables to derive codenames
-    int middle_index;
-    std::string TempCodeName;
+    int middle_index; // middle index to store middle character
+    std::string TempCodeName; // temporary variables to store codename
 
     // iterate all members of bank vectors
     for(int i = 0; i < BankVec.size(); i ++){
@@ -90,7 +96,23 @@ std::vector <Bank> get_account_codenames(std::vector <Bank> BankVec){
     return BankVec;
 }
 
+std::pair <std::map <std::string, std::string>, std::map <std::string, std::string>> get_acc_name_codenames_map(std::vector <Bank> BankVec){
+
+    /* This function creates two maps of account names and their codenames */
+
+    std::map <std::string, std::string> name_codename_map, codename_name_map;
+    for (auto Bank: BankVec){
+        name_codename_map[Bank.Name] = Bank.CodeName;
+        codename_name_map[Bank.CodeName] = Bank.Name;
+    }
+
+    return std::make_pair(name_codename_map, codename_name_map);
+
+}
+
 bool isValidCodename(std::vector <Bank> BankVec, std::string InputCodeName){
+
+    /* This function checks whether the codename input from user is valid */
 
     bool valid_codename = false;
     // iterate through bank vector

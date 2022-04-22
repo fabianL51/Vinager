@@ -70,6 +70,34 @@ int main(){
         UtilWks.cell("B7").value(xlnt::column_t::column_string_from_index(last_empty_index));
     }
 
+    // initialize Records sheet: first row = 2nd row
+    // get accounts codenames
+    BankVec = get_account_codenames(BankVec);
+
+    // get maps between account names and their codenames
+    std::map <std::string, std::string> acc_name_codename_key, acc_codename_name_key;
+    std::pair <std::map <std::string, std::string>, std::map <std::string, std::string>> map_pair = get_acc_name_codenames_map(BankVec);
+    acc_name_codename_key = map_pair.first;
+    acc_codename_name_key = map_pair.second;
+
+    // create map of account codenames to its corresponding column in Records sheet
+    int start_col = xlnt::column_t::column_index_from_string("G"); // start at G column
+    std::map <std::string, int> acc_codename_column_key;
+    for (int i = start_col; i <= RecordsWks.highest_column().index; i++){
+        acc_codename_column_key[acc_name_codename_key[RecordsWks.cell(i,1).value<std::string>()]] = i;
+    }
+
+    // column A is current date
+    RecordsWks.cell("A",2).value(xlnt::date::today());
+    // column E is detail
+    RecordsWks.cell("E",2).value("Starting Point");
+    // fill the starting balance of each accounts
+    for(auto Bank:BankVec){
+        RecordsWks.cell(acc_codename_column_key[Bank.CodeName], 2).value(Bank.Balance);
+    }
+    // update current row in utilities
+    UtilWks.cell("B6").value(3);
+
     // save workbooks
     FinCordsWkb.save(FinCordsWkbName);
     UtilWkb.save(UtilWkbName); 

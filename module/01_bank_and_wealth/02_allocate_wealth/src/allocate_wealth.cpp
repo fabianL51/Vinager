@@ -212,12 +212,13 @@ int main(){
              AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: start balance
             // formulas for current balance: percentage multiplies total assets
             if (i < WealthClassVec.size() - 1){
-                // Liquid Assets get from N2
-                AssetWks.cell("J", i + wealth_current_row).formula("=H"+ std::to_string(i + wealth_current_row) + "/100 * N2"); // col J: current balance
+                // Liquid Assets: Allocation times sum of liquid assets
+                // xlnt doesn't allow reading calculated value of a cell with formula: calculation in cpp
+                AssetWks.cell("J", i + wealth_current_row).value(WealthClassVec.at(i).PercentAllocation * LiquidSum / 100 );// col J: current balance
             }
             else{
-                // Fixed Assets get from N3
-                AssetWks.cell("J", i + wealth_current_row).formula("=N3"); // col J: current balance
+                // Fixed Assets get from sum of fixed assets
+                AssetWks.cell("J", i + wealth_current_row).value(FixedSum); // col J: current balance
             }
             
             // formulas for change in balance
