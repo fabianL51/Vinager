@@ -152,8 +152,6 @@ int main(){
                             std::cin >> confirm;
                                 if (confirm == 1){
                                     tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * LiquidSum;
-                                    /*round( tempWealthClass.Sum * 100.0 ) / 100.0;
-                                    MaxLiquidWealth = round( MaxLiquidWealth * 100.0 ) / 100.0;*/
                                     MaxLiquidAlloc -= tempWealthClass.PercentAllocation;
                                     exit_loop = 1;
                                 }
@@ -196,11 +194,11 @@ int main(){
         // delete unused cells
         xlnt::range_reference delete_range = xlnt::range_reference("G", 4, "K", AssetWks.highest_row());
         AssetWks.range(delete_range).clear_cells();
-        // reborder Assets sheet
+        /*// reborder Assets sheet
         xlnt::border range_border = create_data_border();
         xlnt::range_reference reborder_range;
         reborder_range = xlnt::range_reference("G", 4, "K", n_wealth + wealth_current_row - 1);
-        AssetWks.range(reborder_range).border(range_border);        
+        AssetWks.range(reborder_range).border(range_border); */       
 
         // display in command prompt and store new wealth informations
         for (int i = 0; i < WealthClassVec.size(); i++){
@@ -209,7 +207,7 @@ int main(){
             // row 0 doesn't exist and row 1 is header, so row i + wealth current row
             AssetWks.cell("G", i + wealth_current_row).value(WealthClassVec.at(i).Name); // col G: wealth class name
             AssetWks.cell("H", i + wealth_current_row).value(WealthClassVec.at(i).PercentAllocation); // col H: percent allocation balance
-             AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: start balance
+            AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: start balance
             // formulas for current balance: percentage multiplies total assets
             if (i < WealthClassVec.size() - 1){
                 // Liquid Assets: Allocation times sum of liquid assets

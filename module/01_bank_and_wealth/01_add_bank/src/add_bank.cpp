@@ -106,11 +106,11 @@ int main(){
         // formula for change in balance in column E
         AssetsWks.cell("E", current_row).formula("=D" + std::to_string(current_row) + "-C" + std::to_string(current_row));     
         
-        // prepare the border for next row in current row is not the 4th row
+        /*// prepare the border for next row in current row is not the 4th row
         if (current_row >= 4){
             xlnt::border data_border = AssetsWks.cell("A4").border();
             AssetsWks.range(xlnt::range_reference("A", current_row, "E", current_row)).border(data_border);
-        }
+        }*/
         // Update the value in utilities workbook
         UtilitesWks.cell("B4").value(current_row + 1);
 

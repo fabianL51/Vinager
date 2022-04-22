@@ -122,7 +122,6 @@ int main(){
         bool valid_money = false;
         double transfer_amount;
         double MaxGiverMoney = std::round(RecordsWks.cell(acc_codename_column_key[giver_acc_codename], new_row - 1).value<double>() * 100) / 100;
-        std::cout << new_row - 1 << std::endl;
         while (valid_money == false){
             std::cout << "Enter the amount of money to be transferred from " << acc_codename_name_key[giver_acc_codename];
             std::cout << " to " << acc_codename_name_key[receiver_acc_codename] << std::endl;
