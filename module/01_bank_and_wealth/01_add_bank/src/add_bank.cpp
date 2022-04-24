@@ -49,9 +49,6 @@ int main(){
         while (exit_loop == false){
             // ask the user in command window for the starting money of the bank
             std::cout << "Insert the start amount of money for " << bank.Name << " : ";
-            // clear the input
-            std::cin.clear();
-            while (std::cin.get() != '\n') ;
             // begin loop as long as exit_loop is false
             if (std::cin >> bank.Balance){
                 // if input value is valid then set exit_loop to true to exit loop
@@ -61,6 +58,9 @@ int main(){
                 // if input value invalid then inform the user
                 std::cout << "Invalid amount of money.";               
             }
+            // clear the input
+            std::cin.clear();
+            while (std::cin.get() != '\n') ;
             std::cout << std::endl; // empty line for better display in command window
         }
 
@@ -70,9 +70,6 @@ int main(){
         while (exit_loop == false){
             // ask the user in command window for the asset type of the bank account
             std::cout << "Insert current asset type " << bank.Name << std::endl << "Insert 'L' for liquid asset and 'F' for fixed asset :" << std::endl;
-            // clear the input
-            std::cin.clear();
-            while (std::cin.get() != '\n') ;
             // get input
             std::getline(std::cin, bank.AssetType);
             // if input value is valid then set exit_loop to true to exit loop
