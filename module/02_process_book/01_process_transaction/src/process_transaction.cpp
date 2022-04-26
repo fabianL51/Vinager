@@ -55,10 +55,10 @@ int main(){
     int start_row = 3; // first account is located in 3rd row
     std::map <std::string, int> acc_name_row_AssetsKey, acc_codename_column_RecordsKey;
     for (int i = 0; i < BankVec.size(); i++){
-        acc_name_row_AssetsKey[AssetsWks.cell("A", i).value<std::string>()] = start_row + i;
+        acc_name_row_AssetsKey[AssetsWks.cell("A", start_row + i).value<std::string>()] = start_row + i;
         acc_codename_column_RecordsKey[acc_name_codename_key[RecordsWks.cell(i + start_col, 1).value<std::string>()]] = i + start_col;
     }
-
+    
     // display all accounts
     std::cout << "------------- Current accounts balance ----------" << std::endl;
     for (auto Bank: BankVec){
@@ -88,7 +88,7 @@ int main(){
 
     // initialize all variables used by all transactions
     double money_in, money_out;
-    std::string Category, transaction_acc;
+    std::string Category, transaction_acc, giver_acc_codename, receiver_acc_codename, payment_acc_codename;
 
     // process by transaction type
     if (transaction_type == "T"){
@@ -97,7 +97,6 @@ int main(){
         std::cout << "Interaccount transfers selected" << std::endl;
         // get giver account
         bool valid_giver_acc = false;
-        std::string giver_acc_codename;
         while (valid_giver_acc == false){
             std::cout << "Enter the codename of the GIVER account" << std::endl;
             for (auto const& map: acc_codename_name_key){
@@ -114,7 +113,6 @@ int main(){
 
         // get receiver account
         bool valid_receiver_acc = false;
-        std::string receiver_acc_codename;
         while (valid_receiver_acc == false){
             std::cout << "Enter the codename of the RECEIVER account" << std::endl;
             for (auto const& map: receiver_key){
@@ -152,7 +150,6 @@ int main(){
         std::cout << "Expenses selected" << std::endl;
         // get paying account
         bool valid_payment_acc = false;
-        std::string payment_acc_codename;
         while (valid_payment_acc == false){
             std::cout << "Enter the codename of the payment account for the expense" << std::endl;
             for (auto const& map: acc_codename_name_key){
@@ -189,7 +186,6 @@ int main(){
         std::cout << "Income selected" << std::endl;
         // get paying account
         bool valid_payment_acc = false;
-        std::string payment_acc_codename;
         while (valid_payment_acc == false){
             std::cout << "Enter the codename of the payment account for the income" << std::endl;
             for (auto const& map: acc_codename_name_key){
@@ -246,6 +242,14 @@ int main(){
     RecordsWks.cell("F", new_row).value(transaction_acc);
     // update amount of money of all accounts
     for (auto Bank: BankVec){
+
+        if (Bank.CodeName == receiver_acc_codename or (Bank.CodeName == payment_acc_codename and transaction_type == "I")){
+            Bank.Balance += money_in;
+        }
+        else if (Bank.CodeName == giver_acc_codename or (Bank.CodeName == payment_acc_codename and transaction_type == "E")){
+            Bank.Balance -= money_out;
+        }
+
         // update balance in Records sheet
         RecordsWks.cell(acc_codename_column_RecordsKey[Bank.CodeName], new_row).value(Bank.Balance);
 
