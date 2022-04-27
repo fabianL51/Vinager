@@ -1,0 +1,5 @@
+# ninja log v5
+4	914	6714191707665452	CMakeFiles/01_financial_records.dir/src/initialize_financial_records.cpp.obj	e31e7d45498b5791
+915	1112	6714191709313267	initialize_workbook.exe	2c91258470907abf
+4	912	6714192789298157	CMakeFiles/01_financial_records.dir/src/initialize_financial_records.cpp.obj	e31e7d45498b5791
+913	1109	6714192790967077	initialize_workbook.exe	2c91258470907abf

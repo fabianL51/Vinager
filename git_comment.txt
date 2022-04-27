@@ -1,0 +1,4 @@
+Restructuring projects
+
+-finish manage bank, edit CMake
+-restructure CMake
