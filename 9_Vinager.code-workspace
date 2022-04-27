@@ -70,7 +70,8 @@
 			"memory_resource": "cpp",
 			"string_view": "cpp",
 			"cinttypes": "cpp",
-			"iomanip": "cpp"
+			"iomanip": "cpp",
+			"fstream": "cpp"
 		}
 	}
 }
