@@ -4,15 +4,33 @@
 #include <math.h>
 #include <string>
 #include <xlnt/xlnt.hpp> // include xlnt for excel handling
-#include "Banks.h" // for handling Banks classes
+#include "Account.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
 #include <cctype> // for uppercase
 #include <map> // for mapping
 
 inline bool file_exists (const std::string& name) {
-    /* This functions check if a file exists */
+    /* This functions check if a file exists 
+    source: https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exists-using-standard-c-c11-14-17-c
+    answer by PherricOxide and IInspectable    
+    */
     struct stat buffer;   
     return (stat (name.c_str(), &buffer) == 0); 
+}
+
+std::string ordinal_suffix(int n)
+{
+    /* this functions returns the ordinal suffix of a real number n
+    for example: 1 = 1st, 2 = 2nd, 3 = 3rd, 13 = 13th 
+    source: https://stackoverflow.com/questions/21548099/function-for-getting-the-ordinal-of-a-number
+    answer by einpoklum   
+    */
+        std::vector <std::string> suffixes  = {"th", "st", "nd", "rd"};
+        auto ord = n % 100;
+        if (ord / 10 == 1) { ord = 0; }
+        ord = ord % 10;
+        if (ord > 3) { ord = 0; }
+        return suffixes.at(ord);
 }
 
 xlnt::border create_data_border (){
@@ -30,13 +48,13 @@ xlnt::border create_data_border (){
     return border;
 }
 
-std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::worksheet AssetWks, int Acc_lr, int Wea_lr){
+std::pair <std::vector <Account>, std::vector <Asset>> get_accounts_wealth(xlnt::worksheet AssetWks, int Acc_lr, int Wea_lr){
 
     /* This function gets the accounts and wealth classes through iterating in Asset sheets */
 
-    std::vector <Bank> BankVec;
+    std::vector <Account> BankVec;
     std::vector <Asset> WealthClassVec;
-    Bank tempBank;
+    Account tempBank;
     Asset tempWealthClass;
     // std::setlocale(LC_ALL, "de_DE");
 
@@ -65,7 +83,7 @@ std::pair <std::vector <Bank>, std::vector <Asset>> get_accounts_wealth(xlnt::wo
     return std::make_pair(BankVec, WealthClassVec);
 }
 
-std::vector <Bank> get_account_codenames(std::vector <Bank> BankVec){
+std::vector <Account> get_account_codenames(std::vector <Account> BankVec){
 
     /* This function creates codenames for each account */
 
@@ -96,7 +114,7 @@ std::vector <Bank> get_account_codenames(std::vector <Bank> BankVec){
     return BankVec;
 }
 
-std::pair <std::map <std::string, std::string>, std::map <std::string, std::string>> get_acc_name_codenames_map(std::vector <Bank> BankVec){
+std::pair <std::map <std::string, std::string>, std::map <std::string, std::string>> get_acc_name_codenames_map(std::vector <Account> BankVec){
 
     /* This function creates two maps of account names and their codenames */
 
@@ -110,7 +128,7 @@ std::pair <std::map <std::string, std::string>, std::map <std::string, std::stri
 
 }
 
-bool isValidCodename(std::vector <Bank> BankVec, std::string InputCodeName){
+bool isValidCodename(std::vector <Account> BankVec, std::string InputCodeName){
 
     /* This function checks whether the codename input from user is valid */
 

@@ -8,13 +8,13 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId} 
-  src/add_bank.cpp
+  src/manage_accounts.cpp
 )
 
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "add_bank")
+    OUTPUT_NAME "manage_accounts")
 
 # get main Path
 get_filename_component(SubModulePath ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)

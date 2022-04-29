@@ -13,11 +13,11 @@ int main(){
     
     /* This is the main function for bank initializaton */
 
-    // try to open csv file containing accounts data exist
+    // open or create csv file containing accounts data
     std::ifstream accounts_csv_file(GlobalData::FileNames::accounts_csv);
 
     // check if csv file containing accounts data exist
-    if (accounts_csv_file.is_open()){
+    if (file_exists(GlobalData::FileNames::accounts_csv)){
         /* manage bank */
     }
     else {
@@ -54,7 +54,7 @@ int main(){
 
         for (int i = 1; i <= n_acc; i++){
             // get the account name
-            std::cout << "Insert the account name ";
+            std::cout << "Insert the name for the " << i << ordinal_suffix(i) << " account ";
             std::getline(std::cin, tempAccount.Name);
             std::cout << std::endl;
 
@@ -99,11 +99,16 @@ int main(){
                 // warning if input is invalid
                 if (exit_loop == false){
                     std::cout << "Invalid asset type." << std::endl;
+                    }
                 }
-            }
+
+            // add tempAccount to accounts vector
+            accounts_vector.emplace_back(tempAccount);
 
             // clear tempAccount for next account
             tempAccount.clear();
+        }
+
     }
 
     // store accounts and asset type values in their corresponding csv files
