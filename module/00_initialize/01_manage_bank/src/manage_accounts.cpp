@@ -1,9 +1,10 @@
 #include "Account.h" // for handling Banks classes
+#include "GlobalData.h" // to get global data such as csv names
 #include "utils.h" // utilities functions
 #include <fstream> // to handle csv data
 #include <map> // to handle map
 #include <sstream> // to convert char to string
-#include "GlobalData.h"
+#include <cctype> // to uppercase letters
 
 
 
@@ -14,7 +15,7 @@ int main(){
     /* This is the main function for bank initializaton */
 
     // open or create csv file containing accounts data
-    std::ifstream accounts_csv_file(GlobalData::FileNames::accounts_csv);
+    std::fstream accounts_csv_file;
 
     // check if csv file containing accounts data exist
     if (file_exists(GlobalData::FileNames::accounts_csv)){
@@ -22,6 +23,10 @@ int main(){
     }
     else {
         /* initialize bank */
+
+        // creates the csv file
+        accounts_csv_file.open(GlobalData::FileNames::accounts_csv, std::ios::out | std::ios::app);
+        
         std::cout << "-------------Initializing Accounts--------------" << std::endl;
 
         // get number of accounts to be initialized
@@ -51,12 +56,22 @@ int main(){
         Account tempAccount; // temporary storage of account information
         double SumLiquid = 0; // total sum for each liquid asset
         double SumFixed = 0; // total sum for each fixed asset
+        int middle_index; // integer to get middle index of account name for codenames
 
         for (int i = 1; i <= n_acc; i++){
             // get the account name
             std::cout << "Insert the name for the " << i << ordinal_suffix(i) << " account ";
             std::getline(std::cin, tempAccount.Name);
             std::cout << std::endl;
+
+            // get account codename
+            middle_index = std::round(tempAccount.Name.length() / 2);
+            // first character
+            tempAccount.CodeName.push_back(tempAccount.Name[0]);
+            // middle character
+            tempAccount.CodeName.push_back(toupper(tempAccount.Name[middle_index]));
+            // last character
+            tempAccount.CodeName.push_back(toupper(tempAccount.Name[tempAccount.Name.length() - 1]));
 
             // get the account balance
             exit_loop = false; // variable exit_loop is bool in case user give invalid input
@@ -105,13 +120,19 @@ int main(){
             // add tempAccount to accounts vector
             accounts_vector.emplace_back(tempAccount);
 
+            // write to csv
+            char delimiter = ',';
+            accounts_csv_file << tempAccount.Name << delimiter << tempAccount.CodeName << delimiter << tempAccount.AssetType << 
+                delimiter << tempAccount.Balance << "\n"; 
+
             // clear tempAccount for next account
             tempAccount.clear();
         }
 
-    }
+        // close csv
+        accounts_csv_file.close();
 
-    // store accounts and asset type values in their corresponding csv files
-    
+    }
+   
     
 }

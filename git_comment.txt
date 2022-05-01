@@ -1,4 +1,3 @@
-Restructuring projects
+adding accounts finished
 
--finish manage bank, edit CMake
--restructure CMake
+-continue with wealth allocation

@@ -6,7 +6,6 @@
 #include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include "Account.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
-#include <cctype> // for uppercase
 #include <map> // for mapping
 
 inline bool file_exists (const std::string& name) {
@@ -32,6 +31,7 @@ std::string ordinal_suffix(int n)
         if (ord > 3) { ord = 0; }
         return suffixes.at(ord);
 }
+
 
 xlnt::border create_data_border (){
 

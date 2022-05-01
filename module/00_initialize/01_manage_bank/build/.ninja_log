@@ -1,5 +1,5 @@
 # ninja log v5
-4	1006	6729761727050993	CMakeFiles/01_manage_bank.dir/src/manage_accounts.cpp.obj	d8f5eeec61555046
-1006	1218	6729761728968713	manage_accounts.exe	c18a1e1715e1fd7f
-4	1051	6729761862410839	CMakeFiles/01_manage_bank.dir/src/manage_accounts.cpp.obj	d8f5eeec61555046
-1052	1268	6729761864296207	manage_accounts.exe	c18a1e1715e1fd7f
+4	1097	6731463881057789	CMakeFiles/01_manage_bank.dir/src/manage_accounts.cpp.obj	d8f5eeec61555046
+1098	1321	6731463882992046	manage_accounts.exe	c18a1e1715e1fd7f
+5	1073	6731466154677406	CMakeFiles/01_manage_bank.dir/src/manage_accounts.cpp.obj	d8f5eeec61555046
+1074	1296	6731466156592652	manage_accounts.exe	c18a1e1715e1fd7f
