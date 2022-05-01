@@ -14,20 +14,28 @@ int main(){
     
     /* This is the main function for bank initializaton */
 
-    // open or create csv file containing accounts data
-    std::fstream accounts_csv_file;
+    // initialize variables
+    std::fstream accounts_csv_file; // fstream to read or write csv file
+    bool init_accounts = !file_exists(GlobalData::FileNames::accounts_csv); // boolean whether accounts are to be initialized
 
     // check if csv file containing accounts data exist
     if (file_exists(GlobalData::FileNames::accounts_csv)){
-        /* manage bank */
+        std::cout << "Initialized Accounts are found" << std::endl;
+        // ask user whether he wants reset accounts or not
+        int reinit;
+        std::cout << "Press 1 to reinitialized accounts and any other keys to cancel ";
+        std::cin >> reinit;
+
+        // overwrite init_accounts bool if user wish to reinitialize account
+        init_accounts = reinit == 1;
     }
-    else {
-        /* initialize bank */
+    if (init_accounts == true) {
+        /* initialize account */
 
         // creates the csv file
         accounts_csv_file.open(GlobalData::FileNames::accounts_csv, std::ios::out | std::ios::app);
         
-        std::cout << "-------------Initializing Accounts--------------" << std::endl;
+        std::cout << "-------------Initializing Accounts-------------" << std::endl;
 
         // get number of accounts to be initialized
         int n_acc;
@@ -72,6 +80,8 @@ int main(){
             tempAccount.CodeName.push_back(toupper(tempAccount.Name[middle_index]));
             // last character
             tempAccount.CodeName.push_back(toupper(tempAccount.Name[tempAccount.Name.length() - 1]));
+            // current index
+            tempAccount.CodeName.append(std::to_string(i));
 
             // get the account balance
             exit_loop = false; // variable exit_loop is bool in case user give invalid input
@@ -132,6 +142,9 @@ int main(){
         // close csv
         accounts_csv_file.close();
 
+    }
+    else {
+         /* manage initialized accounts */
     }
    
     

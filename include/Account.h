@@ -11,10 +11,10 @@ class Account{
 
     public:
         void clear(){
-            std::string Name;
-            double Balance;
-            std::string AssetType;
-            std::string CodeName;
+            Name.clear();
+            AssetType.clear();
+            CodeName.clear();
+            Balance = 0;
         }
 
         std::string Name;
