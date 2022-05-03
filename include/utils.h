@@ -1,11 +1,13 @@
 #include <sys/stat.h> // to check file exists or not
 #pragma once // prevent errors when some libraries are called in another scripts
-#include <iostream>
-#include <math.h>
-#include <string>
-#include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include "Account.h" // for handling Banks classes
 #include "Asset.h" // for handling Asset classes
+#include <fstream> // to handle csv data
+#include <sstream> // to read string in csv
+#include <iostream> // basic
+#include <math.h> // for math and vector
+#include <string> // string handles
+#include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include <map> // for mapping
 
 inline bool file_exists (const std::string& name) {
@@ -30,6 +32,47 @@ std::string ordinal_suffix(int n)
         ord = ord % 10;
         if (ord > 3) { ord = 0; }
         return suffixes.at(ord);
+}
+
+std::vector <Account> get_accounts_vector(){
+
+    /* this function read csv for accounts and return a vector of Account class */
+
+
+    // initialize variables
+    std::fstream account_csv_fstream;
+    std::string line; // line as string to get the whole line
+    std::vector <Account> Account_vector; // account vector to be returned
+    Account tempAccount; // temporary account to be added into vector
+    char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+
+    // open csv
+    account_csv_fstream.open(GlobalData::FileNames::accounts_csv, std::ios::in);
+
+    if (!account_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+
+    // read csv
+    while (std::getline(account_csv_fstream, line)){
+        
+        // get stringstream from line
+        std::stringstream ss(line);
+
+        // store the value into tempAccount
+        ss >> tempAccount.Name >> delimiter >> tempAccount.CodeName >> delimiter >> tempAccount.AssetType >> 
+                delimiter >> tempAccount.Balance;
+        
+        // expand account vector
+        Account_vector.emplace_back(tempAccount);
+
+        // clear tempAccount
+        tempAccount.clear();
+    }
+
+    // close csv
+    account_csv_fstream.close();
+
+    // return account vector
+    return Account_vector;
 }
 
 

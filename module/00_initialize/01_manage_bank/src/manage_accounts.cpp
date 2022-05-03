@@ -3,7 +3,6 @@
 #include "utils.h" // utilities functions
 #include <fstream> // to handle csv data
 #include <map> // to handle map
-#include <sstream> // to convert char to string
 #include <cctype> // to uppercase letters
 
 
@@ -17,23 +16,27 @@ int main(){
     // initialize variables
     std::fstream accounts_csv_file; // fstream to read or write csv file
     bool init_accounts = !file_exists(GlobalData::FileNames::accounts_csv); // boolean whether accounts are to be initialized
+    char delimiter = GlobalData::csv_config::delimiter;
 
     // check if csv file containing accounts data exist
     if (file_exists(GlobalData::FileNames::accounts_csv)){
         std::cout << "Initialized Accounts are found" << std::endl;
         // ask user whether he wants reset accounts or not
-        int reinit;
-        std::cout << "Press 1 to reinitialized accounts and any other keys to cancel ";
-        std::cin >> reinit;
+        std::string reset;
+        std::cout << "Press 1 to reset accounts and any other keys to manage created accounts ";
+        std::cin >> reset;
 
         // overwrite init_accounts bool if user wish to reinitialize account
-        init_accounts = reinit == 1;
+        init_accounts = std::stoi(reset) == 1;
     }
+
+    
+
     if (init_accounts == true) {
         /* initialize account */
 
         // creates the csv file
-        accounts_csv_file.open(GlobalData::FileNames::accounts_csv, std::ios::out | std::ios::app);
+        accounts_csv_file.open(GlobalData::FileNames::accounts_csv, std::ios::out);
         
         std::cout << "-------------Initializing Accounts-------------" << std::endl;
 
@@ -131,7 +134,6 @@ int main(){
             accounts_vector.emplace_back(tempAccount);
 
             // write to csv
-            char delimiter = ',';
             accounts_csv_file << tempAccount.Name << delimiter << tempAccount.CodeName << delimiter << tempAccount.AssetType << 
                 delimiter << tempAccount.Balance << "\n"; 
 
@@ -142,9 +144,28 @@ int main(){
         // close csv
         accounts_csv_file.close();
 
+        // save asset type
+        std::fstream asset_type_csv_file;
+        asset_type_csv_file.open(GlobalData::FileNames::asset_type_csv, std::ios::out);
+        asset_type_csv_file << "Liquid" << delimiter << SumLiquid << "\n";
+        asset_type_csv_file << "Fixed" << delimiter << SumFixed << "\n";
+        asset_type_csv_file.close();
     }
-    else {
-         /* manage initialized accounts */
+    else if(init_accounts == false) {
+        /* manage initialized accounts */
+
+        // read csv file
+        std::vector <Account> accounts_vector = get_accounts_vector();
+
+        // display all accounts in command line
+        for (auto tempAccount:accounts_vector){
+            std::cout << tempAccount.Name << " (" << tempAccount.CodeName << ") - " << tempAccount.AssetType
+                << " :" << tempAccount.Balance << std::endl;
+        }
+
+        
+
+
     }
    
     

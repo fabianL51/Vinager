@@ -1,3 +1,5 @@
-adding accounts finished
+change small errors
 
--continue with wealth allocation
+-codenames creation corrected
+-user may reinitialize accounts
+-manage accounts is to be implemented
