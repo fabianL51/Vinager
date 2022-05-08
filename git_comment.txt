@@ -1,5 +1,5 @@
-stage 1 manage_accounts
+allocate wealth
 
--errors from last commit eliminated
--manage accounts case is still to be implemented
--continue allocate wealth firsts
+-function in utils added: reading wealth class and asset type
+-test reading from user
+-save wealth class in csv, see reading in utils

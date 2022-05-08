@@ -1,71 +1,42 @@
-#include "Banks.h" // for handling Banks classes
-#include "Asset.h" // for handling Asset classes
+#include "Account.h" // for handling Accounts classes
+#include "WealthClass.h" // for handling Asset classes
 #include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include "utils.h" // utilities functions
 #include <iomanip> // for set precision
 
-/* This functions allocates all Liquid wealth of all bank accounts */
+/* This functions allocates all Liquid wealth of all Account accounts */
 
 
 int main(){
 
-    // checking excel containing banks' accounts information
-    std::cout << "Accesing active bank accounts" << std::endl;;
+    // get vectors of accounts, wealth classes, and asset types total from csv file
+    std::vector <Account> accounts_vector = get_accounts_vector();
+    std::vector <WealthClass> wealth_classes_vector = get_wealth_classes_vector();
+    std::vector <double> asset_type_totals = get_assets();
 
-    // initialize workbook and worksheets
-    xlnt::workbook FinCordsWkb, UtilWkb;
-    xlnt::worksheet AssetWks, IncStateWks, UtilWks;
-    std::string FinCordsWkbName = std::to_string(xlnt::date::today().year) + "_FinancialRecords.xlsx";
-    std::string UtilWkbName = "Utilities.xlsx";
+    // get asset type totals
+    double LiquidSum = asset_type_totals.at(0);
+    double FixedSum = asset_type_totals.at(1);
 
-    // load workbooks
-    FinCordsWkb.load(FinCordsWkbName);
-    UtilWkb.load(UtilWkbName);
-
-    // open worksheets
-    AssetWks = FinCordsWkb.sheet_by_title("Assets");
-    IncStateWks = FinCordsWkb.sheet_by_title("Income Statement");
-    UtilWks = UtilWkb.active_sheet();
-
-    // get the last row of both accounts and wealth
-    int acc_last_row = UtilWks.cell("B4").value<int>() - 1;
-    int wealth_current_row = UtilWks.cell("B5").value<int>();
-    int wealth_last_row = wealth_current_row - 1;
-
-    // iterate to get bank and wealth class data
-    // initialize variables
-    std::vector <Bank> BankVec;
-    std::vector <Asset> WealthClassVec;
+    // iterate to get Account and wealth class data
     double LiquidSum = 0;
     double FixedSum = 0;
-    int reallocate = 0;
-    bool AllocateWealth = true;
 
-    // get accounts and wealth classes
-    std::pair<std::vector <Bank>, std::vector <Asset>> bank_wealth_vec = get_accounts_wealth(AssetWks, acc_last_row, wealth_last_row);
-    BankVec = bank_wealth_vec.first;
-    WealthClassVec = bank_wealth_vec.second;
-
-    // display bank data
-    for (auto Bank: BankVec){
-        std::cout << Bank.Name << " -- " << Bank.AssetType << " :";
-        std::cout << std::fixed << std::setprecision(2) << Bank.Balance << std::endl; 
-
-        if (Bank.AssetType == "Liquid"){
-            LiquidSum += Bank.Balance;
-        }
-        else if (Bank.AssetType == "Fixed"){
-            FixedSum += Bank.Balance;
-        }
+    // display Account data
+    for (auto Account: accounts_vector){
+        std::cout << Account.Name << " -- " << Account.AssetType << " :";
+        std::cout << std::fixed << std::setprecision(2) << Account.Balance << std::endl; 
     }
 
     // ask user if wealth class has already been allocated
-    if (WealthClassVec.size() > 0){
+    int reallocate = 0;
+    bool AllocateWealth = true;
+    if (wealth_classes_vector.size() > 0){
         // inform user that wealth may already have been allocated
         std::cout << "Wealth might have already been allocated" << std::endl;
 
             // display current wealth class
-            for (auto WealthClass:WealthClassVec){
+            for (auto WealthClass:wealth_classes_vector){
                 std::cout << "Layer: " << WealthClass.Name << " : ";
                 std::cout << std::fixed << std::setprecision(2) << WealthClass.Sum << std::endl; 
             }
@@ -80,7 +51,7 @@ int main(){
     if (AllocateWealth == true){
         
         // reinitialize wealth class vector
-        WealthClassVec.clear();
+        wealth_classes_vector.clear();
 
         // inform user of total assets of each asset type
         std::cout << "Liquid assets total: " << std::fixed << std::setprecision(2) << LiquidSum;
@@ -114,7 +85,7 @@ int main(){
         // initialize variables
         double confirm;
         double MaxLiquidAlloc = 100;
-        Asset tempWealthClass;
+        WealthClass tempWealthClass;
 
         for (int i = 1; i <= n_wealth; i++){
 
@@ -172,67 +143,16 @@ int main(){
                     }
                 }
                 // update vector
-                WealthClassVec.emplace_back(tempWealthClass);
+                wealth_classes_vector.emplace_back(tempWealthClass);
             }
 
         // add fixed assets
-        Asset Fixed;
+        WealthClass Fixed;
         Fixed.Name = "Fixed Asset";
         Fixed.Sum = FixedSum;
         Fixed.PercentAllocation = 100;
-        WealthClassVec.emplace_back(Fixed);
-        n_wealth = WealthClassVec.size();
-
-        // save both fixed and liquid assets in column L and M
-        AssetWks.cell("M2").value("Liquid");
-        AssetWks.cell("M3").value("Fixed");
-        AssetWks.cell("N2").value(LiquidSum);
-        AssetWks.cell("N3").value(FixedSum);
-        
-        // reset values of current wealth row
-        wealth_current_row = 3;
-        // delete unused cells
-        xlnt::range_reference delete_range = xlnt::range_reference("G", 4, "K", AssetWks.highest_row());
-        AssetWks.range(delete_range).clear_cells();
-        /*// reborder Assets sheet
-        xlnt::border range_border = create_data_border();
-        xlnt::range_reference reborder_range;
-        reborder_range = xlnt::range_reference("G", 4, "K", n_wealth + wealth_current_row - 1);
-        AssetWks.range(reborder_range).border(range_border); */       
-
-        // display in command prompt and store new wealth informations
-        for (int i = 0; i < WealthClassVec.size(); i++){
-
-            // update the wealth information in Assets sheet
-            // row 0 doesn't exist and row 1 is header, so row i + wealth current row
-            AssetWks.cell("G", i + wealth_current_row).value(WealthClassVec.at(i).Name); // col G: wealth class name
-            AssetWks.cell("H", i + wealth_current_row).value(WealthClassVec.at(i).PercentAllocation); // col H: percent allocation balance
-            AssetWks.cell("I", i + wealth_current_row).value(WealthClassVec.at(i).Sum); // col I: start balance
-            // formulas for current balance: percentage multiplies total assets
-            if (i < WealthClassVec.size() - 1){
-                // Liquid Assets: Allocation times sum of liquid assets
-                // xlnt doesn't allow reading calculated value of a cell with formula: calculation in cpp
-                AssetWks.cell("J", i + wealth_current_row).value(WealthClassVec.at(i).PercentAllocation * LiquidSum / 100 );// col J: current balance
-            }
-            else{
-                // Fixed Assets get from sum of fixed assets
-                AssetWks.cell("J", i + wealth_current_row).value(FixedSum); // col J: current balance
-            }
-            
-            // formulas for change in balance
-            AssetWks.cell("K", i + wealth_current_row).formula("=J" + std::to_string(i + wealth_current_row) + "-I" + std::to_string(i + wealth_current_row));
-            
-            // display in command prompt
-            std::cout << "Layer : " << WealthClassVec.at(i).Name << " : ";
-            std::cout << std::fixed << std::setprecision(2) << WealthClassVec.at(i).Sum << std::endl; 
-        }
-
-        // update rows in utilities
-        UtilWks.cell("B5").value(wealth_current_row + n_wealth);
-
-        // save workbooks
-        FinCordsWkb.save(FinCordsWkbName);
-        UtilWkb.save(UtilWkbName); 
+        wealth_classes_vector.emplace_back(Fixed);
+        n_wealth = wealth_classes_vector.size();
     } 
 }
 

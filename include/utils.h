@@ -1,7 +1,7 @@
 #include <sys/stat.h> // to check file exists or not
 #pragma once // prevent errors when some libraries are called in another scripts
 #include "Account.h" // for handling Banks classes
-#include "Asset.h" // for handling Asset classes
+#include "WealthClass.h" // for handling Asset classes
 #include <fstream> // to handle csv data
 #include <sstream> // to read string in csv
 #include <iostream> // basic
@@ -97,6 +97,110 @@ std::vector <Account> get_accounts_vector(){
 
     // return account vector
     return Account_vector;
+}
+
+
+std::vector <WealthClass> get_wealth_classes_vector(){
+
+    /* this function read csv for wealth classes and return a vector of WealthClass class */
+
+
+    // initialize variables
+    std::fstream wealth_class_csv_fstream;
+    std::string line, word; // strings to get a whole line or a word in a line
+    std::vector <WealthClass> wealth_classes_vector; // account vector to be returned
+    WealthClass tempWealthClass; // temporary account to be added into vector
+    char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+
+    // open csv
+    wealth_class_csv_fstream.open(GlobalData::FileNames::wealth_classes_csv, std::ios::in);
+
+    if (!wealth_class_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+
+    // read csv
+    while (std::getline(wealth_class_csv_fstream, line)){
+        
+        // get stringstream from line
+        std::stringstream ss(line);
+
+        // set index for storing the right information into right data
+        int index = 1;
+        
+        // store the value into tempWealthClass
+        while (std::getline(ss, word, ',')){
+            switch (index)
+            {
+            case 1: // index 1 = wealth class name
+                tempWealthClass.Name = word; 
+                break;
+
+            case 2: // index 2 = allocation from asset type in percent
+                tempWealthClass.PercentAllocation = std::stod(word); 
+                break;
+
+            case 3: // index 3 = wealth class sum
+                tempWealthClass.Sum = std::stod(word); 
+                break;
+            }
+
+            // add index by one
+            index += 1;
+        }
+        
+        // expand account vector
+        wealth_classes_vector.emplace_back(tempWealthClass);
+
+        // clear tempAccount
+        tempWealthClass.clear();
+    }
+
+    // close csv
+    wealth_class_csv_fstream.close();
+
+    // return account vector
+    return wealth_classes_vector;
+}
+
+std::vector <double> get_assets(){
+
+    /* this function read csv for asset type and return their sum in a vector */
+
+
+    // initialize variables
+    std::fstream asset_type_csv_fstream;
+    std::string line, word; // strings to get a whole line or a word in a line
+    std::vector <double> asset_sum_vector; // account vector to be returned
+    char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+
+    // open csv
+    asset_type_csv_fstream.open(GlobalData::FileNames::asset_type_csv, std::ios::in);
+
+    if (!asset_type_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+
+    // read csv
+    while (std::getline(asset_type_csv_fstream, line)){
+        
+        // get stringstream from line
+        std::stringstream ss(line);
+
+        // set index for storing the right information into right data
+        int index = 1;
+        
+        // store the value into tempWealthClass
+        while (std::getline(ss, word, ',')){
+            
+            // get asset type sum: 0 = Liquid, 1 = Fixed
+            asset_sum_vector.at(index - 1) = std::stod(word);
+
+            // add index by one
+            index += 1;
+        }
+    }
+
+    // close csv
+    asset_type_csv_fstream
+    // return account vector
+    return asset_sum_vector;
 }
 
 

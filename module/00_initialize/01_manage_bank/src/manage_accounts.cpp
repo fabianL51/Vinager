@@ -164,7 +164,7 @@ int main(){
     else if(init_accounts == false) {
         /* manage initialized accounts */
 
-        // read csv file
+        // get all accounts from csv file
         std::vector <Account> accounts_vector = get_accounts_vector();
 
         // display all accounts in command line
