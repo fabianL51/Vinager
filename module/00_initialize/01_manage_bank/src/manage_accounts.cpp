@@ -4,6 +4,7 @@
 #include <fstream> // to handle csv data
 #include <map> // to handle map
 #include <cctype> // to uppercase letters
+#include <typeinfo>
 
 
 
@@ -26,8 +27,17 @@ int main(){
         std::cout << "Press 1 to reset accounts and any other keys to manage created accounts ";
         std::cin >> reset;
 
+        
         // overwrite init_accounts bool if user wish to reinitialize account
-        init_accounts = std::stoi(reset) == 1;
+        try
+        {
+            // try if reset can be converted into integer
+            init_accounts = std::stoi(reset) == 1;
+        }
+        catch (std::exception& e)
+        {
+            // do nothing as init_accounts = 0 per default and this is also the case if non integer keys are given
+        }
     }
 
     
@@ -162,6 +172,12 @@ int main(){
             std::cout << tempAccount.Name << " (" << tempAccount.CodeName << ") - " << tempAccount.AssetType
                 << " :" << tempAccount.Balance << std::endl;
         }
+
+        /* IMPLEMENT CODES TO MANAGE ACCOUNTS HERE */
+
+        // stop to view
+        int a;
+        std::cin >> a;
 
         
 

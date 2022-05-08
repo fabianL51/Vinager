@@ -41,7 +41,7 @@ std::vector <Account> get_accounts_vector(){
 
     // initialize variables
     std::fstream account_csv_fstream;
-    std::string line; // line as string to get the whole line
+    std::string line, word; // strings to get a whole line or a word in a line
     std::vector <Account> Account_vector; // account vector to be returned
     Account tempAccount; // temporary account to be added into vector
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
@@ -57,9 +57,33 @@ std::vector <Account> get_accounts_vector(){
         // get stringstream from line
         std::stringstream ss(line);
 
+        // set index for storing the right information into right data
+        int index = 1;
+        
         // store the value into tempAccount
-        ss >> tempAccount.Name >> delimiter >> tempAccount.CodeName >> delimiter >> tempAccount.AssetType >> 
-                delimiter >> tempAccount.Balance;
+        while (std::getline(ss, word, ',')){
+            switch (index)
+            {
+            case 1: // index 1 = account name
+                tempAccount.Name = word; 
+                break;
+
+            case 2: // index 2 = codenames
+                tempAccount.CodeName = word; 
+                break;
+
+            case 3: // index 3 = asset type
+                tempAccount.AssetType = word; 
+                break;
+
+            case 4: // index 4 = balance
+                tempAccount.Balance = std::stod(word); 
+                break;
+            }
+
+            // add index by one
+            index += 1;
+        }
         
         // expand account vector
         Account_vector.emplace_back(tempAccount);
