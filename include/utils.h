@@ -198,7 +198,7 @@ std::vector <double> get_assets(){
     }
 
     // close csv
-    asset_type_csv_fstream
+    asset_type_csv_fstream.close();
     // return account vector
     return asset_sum_vector;
 }
