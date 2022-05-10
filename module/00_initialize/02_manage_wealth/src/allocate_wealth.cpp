@@ -18,10 +18,6 @@ int main(){
     double LiquidSum = asset_type_totals.at(0);
     double FixedSum = asset_type_totals.at(1);
 
-    // iterate to get Account and wealth class data
-    double LiquidSum = 0;
-    double FixedSum = 0;
-
     // display Account data
     for (auto Account: accounts_vector){
         std::cout << Account.Name << " -- " << Account.AssetType << " :";

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#pragma once // prevent errors when some libraries are called in another scripts
 
 /* This script creates namespaces of constant parameters */
 

@@ -24,9 +24,9 @@ get_filename_component(MainPath ${ModulePath} DIRECTORY)
 # activate include in main Path
 include_directories(${MainPath}/include)
 
-# link to libraries in main Path
-target_link_libraries(${ProjectId} 
-  ${MainPath}/lib/libxlnt.dll)
+# link to libraries in main Path: status linking libxlnt.dll causes compile error
+# target_link_libraries(${ProjectId} 
+#   ${MainPath}/lib/libxlnt.dll)
 
 # move executable to main Path
 add_custom_command(TARGET ${ProjectId} 

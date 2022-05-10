@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/02_manage_wealth.dir/src/allocate_wealth.cpp.o -o allocate_wealth 

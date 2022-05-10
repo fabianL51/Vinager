@@ -1,5 +1,3 @@
-allocate wealth
+error in compiled allocate wealth
 
--function in utils added: reading wealth class and asset type
--test reading from user
--save wealth class in csv, see reading in utils
+-fstd::out of range -> check reading from user

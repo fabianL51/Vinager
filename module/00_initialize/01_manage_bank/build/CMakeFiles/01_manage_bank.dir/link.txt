@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/01_manage_bank.dir/src/manage_accounts.cpp.o -o manage_accounts 
