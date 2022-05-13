@@ -12,11 +12,7 @@ int main(){
     // get vectors of accounts, wealth classes, and asset types total from csv file
     std::vector <Account> accounts_vector = get_accounts_vector();
     std::vector <WealthClass> wealth_classes_vector = get_wealth_classes_vector();
-    std::vector <double> asset_type_totals = get_assets();
-
-    // get asset type totals
-    double LiquidSum = asset_type_totals.at(0);
-    double FixedSum = asset_type_totals.at(1);
+    std::map <std::string, double> asset_type_map = get_assets();
 
     // display Account data
     for (auto Account: accounts_vector){
@@ -50,8 +46,9 @@ int main(){
         wealth_classes_vector.clear();
 
         // inform user of total assets of each asset type
-        std::cout << "Liquid assets total: " << std::fixed << std::setprecision(2) << LiquidSum;
-        std::cout << " and Fixed assets total: " << std::fixed << std::setprecision(2) << FixedSum << std::endl;
+         for (auto const& map: asset_type_map){
+            std::cout << map.first << " assets total: " << std::fixed << std::setprecision(2) << map.second << std::endl;
+        }
 
         // ask user how many wealth classes
         int n_wealth;
@@ -76,13 +73,20 @@ int main(){
 
         }
 
-        // allocate wealth class (only for liquid assets)
+        /* allocate wealth class (only for liquid assets) */
 
         // initialize variables
         double confirm;
         double MaxLiquidAlloc = 100;
-        WealthClass tempWealthClass;
+        WealthClass tempWealthClass; // temporary wealth class to store
+        std::fstream wealth_class_csv; // fstream to handle csv for wealth class
+        char delimiter = GlobalData::csv_config::delimiter; // delimiter to write csv. data
 
+
+        // open csv with write permission (replace old data)
+        wealth_class_csv.open(GlobalData::FileNames::wealth_classes_csv, std::ios::out);
+
+        // ask user for allocation
         for (int i = 1; i <= n_wealth; i++){
 
             // reinitialize temporary wealth class
@@ -96,7 +100,7 @@ int main(){
             if (i == n_wealth){
                 // automatically assign the allocation for ultimate class
                 tempWealthClass.PercentAllocation = MaxLiquidAlloc;
-                tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * LiquidSum;
+                tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * asset_type_map["Liquid"];
                 MaxLiquidAlloc -= tempWealthClass.PercentAllocation;
                 exit_loop = 1;
             }
@@ -118,7 +122,7 @@ int main(){
                             std::cout << "Type 1 to confirm or any other keys to cancel ";
                             std::cin >> confirm;
                                 if (confirm == 1){
-                                    tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * LiquidSum;
+                                    tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * asset_type_map["Liquid"];
                                     MaxLiquidAlloc -= tempWealthClass.PercentAllocation;
                                     exit_loop = 1;
                                 }
@@ -140,15 +144,17 @@ int main(){
                 }
                 // update vector
                 wealth_classes_vector.emplace_back(tempWealthClass);
+
+                // write data in csv
+                wealth_class_csv << tempWealthClass.Name <<  delimiter << tempWealthClass.PercentAllocation << delimiter << tempWealthClass.Sum << "\n"; 
+
             }
 
-        // add fixed assets
-        WealthClass Fixed;
-        Fixed.Name = "Fixed Asset";
-        Fixed.Sum = FixedSum;
-        Fixed.PercentAllocation = 100;
-        wealth_classes_vector.emplace_back(Fixed);
-        n_wealth = wealth_classes_vector.size();
+        // add fixed assets in csv data
+        wealth_class_csv << "Fixed Asset" << delimiter << 100 << delimiter << asset_type_map["Fixed"] << "\n";
+
+        // save and close csv data
+        wealth_class_csv.close();
     } 
 }
 

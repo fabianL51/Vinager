@@ -50,51 +50,52 @@ std::vector <Account> get_accounts_vector(){
     // open csv
     account_csv_fstream.open(GlobalData::FileNames::accounts_csv, std::ios::in);
 
-    if (!account_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+    if (!account_csv_fstream.is_open()) {
 
-    // read csv
-    while (std::getline(account_csv_fstream, line)){
-        
-        // get stringstream from line
-        std::stringstream ss(line);
+        // read csv
+        while (std::getline(account_csv_fstream, line)){
+            
+            // get stringstream from line
+            std::stringstream ss(line);
 
-        // set index for storing the right information into right data
-        int index = 1;
-        
-        // store the value into tempAccount
-        while (std::getline(ss, word, ',')){
-            switch (index)
-            {
-            case 1: // index 1 = account name
-                tempAccount.Name = word; 
-                break;
+            // set index for storing the right information into right data
+            int index = 1;
+            
+            // store the value into tempAccount
+            while (std::getline(ss, word, ',')){
+                switch (index)
+                {
+                case 1: // index 1 = account name
+                    tempAccount.Name = word; 
+                    break;
 
-            case 2: // index 2 = codenames
-                tempAccount.CodeName = word; 
-                break;
+                case 2: // index 2 = codenames
+                    tempAccount.CodeName = word; 
+                    break;
 
-            case 3: // index 3 = asset type
-                tempAccount.AssetType = word; 
-                break;
+                case 3: // index 3 = asset type
+                    tempAccount.AssetType = word; 
+                    break;
 
-            case 4: // index 4 = balance
-                tempAccount.Balance = std::stod(word); 
-                break;
+                case 4: // index 4 = balance
+                    tempAccount.Balance = std::stod(word); 
+                    break;
+                }
+
+                // add index by one
+                index += 1;
             }
+            
+            // expand account vector
+            Account_vector.emplace_back(tempAccount);
 
-            // add index by one
-            index += 1;
+            // clear tempAccount
+            tempAccount.clear();
         }
-        
-        // expand account vector
-        Account_vector.emplace_back(tempAccount);
 
-        // clear tempAccount
-        tempAccount.clear();
+        // close csv
+        account_csv_fstream.close();
     }
-
-    // close csv
-    account_csv_fstream.close();
 
     // return account vector
     return Account_vector;
@@ -116,53 +117,54 @@ std::vector <WealthClass> get_wealth_classes_vector(){
     // open csv
     wealth_class_csv_fstream.open(GlobalData::FileNames::wealth_classes_csv, std::ios::in);
 
-    if (!wealth_class_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+    if (wealth_class_csv_fstream.is_open()) {
 
-    // read csv
-    while (std::getline(wealth_class_csv_fstream, line)){
-        
-        // get stringstream from line
-        std::stringstream ss(line);
+        // read csv
+        while (std::getline(wealth_class_csv_fstream, line)){
+            
+            // get stringstream from line
+            std::stringstream ss(line);
 
-        // set index for storing the right information into right data
-        int index = 1;
-        
-        // store the value into tempWealthClass
-        while (std::getline(ss, word, ',')){
-            switch (index)
-            {
-            case 1: // index 1 = wealth class name
-                tempWealthClass.Name = word; 
-                break;
+            // set index for storing the right information into right data
+            int index = 1;
+            
+            // store the value into tempWealthClass
+            while (std::getline(ss, word, ',')){
+                switch (index)
+                {
+                case 1: // index 1 = wealth class name
+                    tempWealthClass.Name = word; 
+                    break;
 
-            case 2: // index 2 = allocation from asset type in percent
-                tempWealthClass.PercentAllocation = std::stod(word); 
-                break;
+                case 2: // index 2 = allocation from asset type in percent
+                    tempWealthClass.PercentAllocation = std::stod(word); 
+                    break;
 
-            case 3: // index 3 = wealth class sum
-                tempWealthClass.Sum = std::stod(word); 
-                break;
+                case 3: // index 3 = wealth class sum
+                    tempWealthClass.Sum = std::stod(word); 
+                    break;
+                }
+
+                // add index by one
+                index += 1;
             }
+            
+            // expand account vector
+            wealth_classes_vector.emplace_back(tempWealthClass);
 
-            // add index by one
-            index += 1;
+            // clear tempAccount
+            tempWealthClass.clear();
         }
-        
-        // expand account vector
-        wealth_classes_vector.emplace_back(tempWealthClass);
 
-        // clear tempAccount
-        tempWealthClass.clear();
+        // close csv
+        wealth_class_csv_fstream.close();
     }
-
-    // close csv
-    wealth_class_csv_fstream.close();
 
     // return account vector
     return wealth_classes_vector;
 }
 
-std::vector <double> get_assets(){
+std::map <std::string, double> get_assets(){
 
     /* this function read csv for asset type and return their sum in a vector */
 
@@ -170,36 +172,72 @@ std::vector <double> get_assets(){
     // initialize variables
     std::fstream asset_type_csv_fstream;
     std::string line, word; // strings to get a whole line or a word in a line
-    std::vector <double> asset_sum_vector; // account vector to be returned
+    std::map <std::string, double>  asset_sum_map; // account vector to be returned
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
 
     // open csv
     asset_type_csv_fstream.open(GlobalData::FileNames::asset_type_csv, std::ios::in);
 
-    if (!asset_type_csv_fstream.is_open()) {std::cout << "file can't be opened!";};
+    if (asset_type_csv_fstream.is_open()) {
 
-    // read csv
-    while (std::getline(asset_type_csv_fstream, line)){
-        
-        // get stringstream from line
-        std::stringstream ss(line);
-
-        // set index for storing the right information into right data
-        int index = 1;
-        
-        // store the value into tempWealthClass
-        while (std::getline(ss, word, ',')){
+        // read csv
+        while (std::getline(asset_type_csv_fstream, line)){
             
-            // get asset type sum: 0 = Liquid, 1 = Fixed
-            asset_sum_vector.at(index - 1) = std::stod(word);
+            // get stringstream from line
+            std::stringstream ss(line);
 
-            // add index by one
-            index += 1;
+            // initialize index
+            int i = 0;
+
+            // initialize a string to store temporarily the key name
+            std::string key_name;
+
+            // store the value into tempWealthClass
+            while (std::getline(ss, word, ',')){
+                
+                // check whether current index is odd or even
+                switch (i % 2)
+                {
+                case 0:
+                    // even: get map key
+                    key_name = word;
+                    break;
+
+                case 1:
+                    // odd: set parameter value to last key
+                    asset_sum_map[key_name] = std::stod(word);
+                    // clear key name
+                    key_name.clear();
+                    break;
+
+                }
+
+                // add index by one
+                i += 1;                
+            }
         }
+
+        // close csv
+        asset_type_csv_fstream.close();
+    }
+    
+    // return account vector
+    return asset_sum_map;
+    
+}
+
+std::map <std::string, int> map_codename_to_index(std::vector <Account> accounts_vector){
+
+    /* This function maps codename to index in current vectors */
+
+    std::map <std::string, int> codename_index_map;
+    for (auto Account: accounts_vector){
+
+        // index is the last character in codename minus 1 (first index in vectors is zero) 
+        // '1' means int(char - 1)
+        codename_index_map[Account.CodeName] = (Account.CodeName[Account.CodeName.length() - 1]) - '1';
     }
 
-    // close csv
-    asset_type_csv_fstream.close();
-    // return account vector
-    return asset_sum_vector;
+    return codename_index_map;
+
 }

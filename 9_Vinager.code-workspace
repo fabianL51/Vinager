@@ -71,7 +71,21 @@
 			"string_view": "cpp",
 			"cinttypes": "cpp",
 			"iomanip": "cpp",
-			"fstream": "cpp"
+			"fstream": "cpp",
+			"bitset": "cpp",
+			"chrono": "cpp",
+			"complex": "cpp",
+			"condition_variable": "cpp",
+			"forward_list": "cpp",
+			"set": "cpp",
+			"unordered_set": "cpp",
+			"optional": "cpp",
+			"ratio": "cpp",
+			"mutex": "cpp",
+			"semaphore": "cpp",
+			"stop_token": "cpp",
+			"thread": "cpp",
+			"typeindex": "cpp"
 		}
 	}
 }
