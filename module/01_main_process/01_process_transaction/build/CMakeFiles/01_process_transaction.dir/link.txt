@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/01_process_transaction.dir/src/process_transaction.cpp.o -o process_transaction  /home/fabian51/Project/Vinager/lib/libxlnt.dll 
+/usr/bin/c++ CMakeFiles/01_process_transaction.dir/src/process_transaction.cpp.o -o process_transaction 

@@ -1,15 +1,15 @@
 #include <sys/stat.h> // to check file exists or not
-#pragma once // prevent errors when some libraries are called in another scripts
+#include <iostream> // basic
 #include "Account.h" // for handling Banks classes
 #include "WealthClass.h" // for handling Asset classes
 #include "GlobalData.h" // for global variables in entire project
 #include <fstream> // to handle csv data
 #include <sstream> // to read string in csv
-#include <iostream> // basic
-#include <math.h> // for math and vector
+#include <math.h> // for math
+#include <vector> // for vector
 #include <string> // string handles
-#include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include <map> // for mapping
+#pragma once // prevent errors when some libraries are called in another scripts
 
 inline bool file_exists (const std::string& name) {
     /* This functions check if a file exists 
@@ -46,11 +46,12 @@ std::vector <Account> get_accounts_vector(){
     std::vector <Account> Account_vector; // account vector to be returned
     Account tempAccount; // temporary account to be added into vector
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+    int index; // index for storing the right information into right data
 
     // open csv
     account_csv_fstream.open(GlobalData::FileNames::accounts_csv, std::ios::in);
 
-    if (!account_csv_fstream.is_open()) {
+    if (account_csv_fstream.is_open()) {
 
         // read csv
         while (std::getline(account_csv_fstream, line)){
@@ -59,10 +60,10 @@ std::vector <Account> get_accounts_vector(){
             std::stringstream ss(line);
 
             // set index for storing the right information into right data
-            int index = 1;
+            index = 1;
             
             // store the value into tempAccount
-            while (std::getline(ss, word, ',')){
+            while (std::getline(ss, word, delimiter)){
                 switch (index)
                 {
                 case 1: // index 1 = account name
@@ -113,6 +114,7 @@ std::vector <WealthClass> get_wealth_classes_vector(){
     std::vector <WealthClass> wealth_classes_vector; // account vector to be returned
     WealthClass tempWealthClass; // temporary account to be added into vector
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+    int index; // index for storing the right information into right data
 
     // open csv
     wealth_class_csv_fstream.open(GlobalData::FileNames::wealth_classes_csv, std::ios::in);
@@ -126,10 +128,10 @@ std::vector <WealthClass> get_wealth_classes_vector(){
             std::stringstream ss(line);
 
             // set index for storing the right information into right data
-            int index = 1;
+            index = 1;
             
             // store the value into tempWealthClass
-            while (std::getline(ss, word, ',')){
+            while (std::getline(ss, word, delimiter)){
                 switch (index)
                 {
                 case 1: // index 1 = wealth class name
@@ -164,39 +166,51 @@ std::vector <WealthClass> get_wealth_classes_vector(){
     return wealth_classes_vector;
 }
 
-std::map <std::string, double> get_assets(){
+std::map <std::string, double> get_string_double_map(std::string which_data){
 
-    /* this function read csv for asset type and return their sum in a vector */
+    /* this function read string:double map : 
+    -csv for asset types and their sum 
+    -csv for categories of expenses and incomes and their sum
+    */
 
 
     // initialize variables
-    std::fstream asset_type_csv_fstream;
-    std::string line, word; // strings to get a whole line or a word in a line
-    std::map <std::string, double>  asset_sum_map; // account vector to be returned
+    std::fstream csv_fstream;
+    std::string line, word, csv_name; // strings to get a whole line or a word in a line
+    std::map <std::string, double>  string_double_map; // account vector to be returned
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+    int index; // index to check whether it's key or value
+
+    // get csv names by checking which case it is
+    if (which_data == "asset_type"){
+        csv_name = GlobalData::FileNames::asset_type_csv;
+    }
+    else if (which_data == "category"){
+        csv_name = GlobalData::FileNames::monthly_categories_csv;
+    }
 
     // open csv
-    asset_type_csv_fstream.open(GlobalData::FileNames::asset_type_csv, std::ios::in);
+    csv_fstream.open(csv_name, std::ios::in);
 
-    if (asset_type_csv_fstream.is_open()) {
+    if (csv_fstream.is_open()) {
 
         // read csv
-        while (std::getline(asset_type_csv_fstream, line)){
+        while (std::getline(csv_fstream, line)){
             
             // get stringstream from line
             std::stringstream ss(line);
 
             // initialize index
-            int i = 0;
+            int index = 0;
 
             // initialize a string to store temporarily the key name
             std::string key_name;
 
-            // store the value into tempWealthClass
-            while (std::getline(ss, word, ',')){
+            // store the value into map
+            while (std::getline(ss, word, delimiter)){
                 
                 // check whether current index is odd or even
-                switch (i % 2)
+                switch (index % 2)
                 {
                 case 0:
                     // even: get map key
@@ -205,7 +219,7 @@ std::map <std::string, double> get_assets(){
 
                 case 1:
                     // odd: set parameter value to last key
-                    asset_sum_map[key_name] = std::stod(word);
+                    string_double_map[key_name] = std::stod(word);
                     // clear key name
                     key_name.clear();
                     break;
@@ -213,16 +227,16 @@ std::map <std::string, double> get_assets(){
                 }
 
                 // add index by one
-                i += 1;                
+                index += 1;                
             }
         }
 
         // close csv
-        asset_type_csv_fstream.close();
+        csv_fstream.close();
     }
     
     // return account vector
-    return asset_sum_map;
+    return string_double_map;
     
 }
 
@@ -232,7 +246,6 @@ std::map <std::string, int> map_codename_to_index(std::vector <Account> accounts
 
     std::map <std::string, int> codename_index_map;
     for (auto Account: accounts_vector){
-
         // index is the last character in codename minus 1 (first index in vectors is zero) 
         // '1' means int(char - 1)
         codename_index_map[Account.CodeName] = (Account.CodeName[Account.CodeName.length() - 1]) - '1';

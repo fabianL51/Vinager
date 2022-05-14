@@ -1,8 +1,6 @@
-allocate wealth completed, continue process_transaction at line 95
+continue process_transaction, utils cleaned
 
--make codes compilable
+-transaction id in case no csv available for transaction records
+-read csv for transaction records
 -input to all historys csvs: use std::ios::app for yearly
 -eventually read historys csvs at the beginning for initialization
--check codename_index_map after compilable (line 23)
--check if giver won't show in receiver input
--test if user gives giver codename in receiver input (missuse case)

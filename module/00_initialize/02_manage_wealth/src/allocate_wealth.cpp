@@ -1,6 +1,4 @@
 #include "Account.h" // for handling Accounts classes
-#include "WealthClass.h" // for handling Asset classes
-#include <xlnt/xlnt.hpp> // include xlnt for excel handling
 #include "utils.h" // utilities functions
 #include <iomanip> // for set precision
 
@@ -12,13 +10,14 @@ int main(){
     // get vectors of accounts, wealth classes, and asset types total from csv file
     std::vector <Account> accounts_vector = get_accounts_vector();
     std::vector <WealthClass> wealth_classes_vector = get_wealth_classes_vector();
-    std::map <std::string, double> asset_type_map = get_assets();
+    std::map <std::string, double> asset_type_map = get_string_double_map("asset_type");
 
     // display Account data
     for (auto Account: accounts_vector){
         std::cout << Account.Name << " -- " << Account.AssetType << " :";
         std::cout << std::fixed << std::setprecision(2) << Account.Balance << std::endl; 
     }
+    std::cout << "------------------------------------------------------" << std::endl;
 
     // ask user if wealth class has already been allocated
     int reallocate = 0;
@@ -32,7 +31,8 @@ int main(){
                 std::cout << "Layer: " << WealthClass.Name << " : ";
                 std::cout << std::fixed << std::setprecision(2) << WealthClass.Sum << std::endl; 
             }
-
+        
+        std::cout << "------------------------------------------------------" << std::endl;
         // ask user whether the wealth should be new allocated
         std::cout << "Press 1 to reallocate wealth and any other keys to cancel ";
         std::cin >> reallocate;
@@ -46,7 +46,7 @@ int main(){
         wealth_classes_vector.clear();
 
         // inform user of total assets of each asset type
-         for (auto const& map: asset_type_map){
+        for (auto const& map: asset_type_map){
             std::cout << map.first << " assets total: " << std::fixed << std::setprecision(2) << map.second << std::endl;
         }
 
