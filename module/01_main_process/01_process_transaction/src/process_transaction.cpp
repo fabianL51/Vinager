@@ -25,7 +25,44 @@ std::string get_transaction_category(std::map <std::string, double> categories_t
 
     // display option to add new category
     std::cout << index << ": Add a new category" << std::endl;
+
+    // get user's wish
+    bool valid_category = false;
+    std::string category;
+    int category_index;
+    while(valid_category == false){
+        std::cout << "Enter a number for the category of the transaction: " << std::endl;
+        if (std::cin >> category_index){
+            // check if user's input is valid: either the index exist in category map or it is the last index to add a new category
+            valid_category = index_category_map.count(category_index) > 0 or category_index == index;
+            if (valid_category == true){
+                if (category_index == index){
+                    // add a new category
+                    std::cout << "Insert the name of the new category: ";
+                    std::getline(std::cin >> std::ws, category);
+                }
+                else {
+                     // set category from map
+                    category = index_category_map[category_index];
+                }
+            }
+            else {
+                // redisplay possible choice
+                for (auto const& map_member:index_category_map){
+                    // display all possible categories to be chosen
+                    std::cout << map_member.first << ": " << map_member.second << std::endl;
+                }
+                // display option to add new category
+                std::cout << index << ": Add a new category" << std::endl;
+            }
+        }
+        // clear the input
+        std::cin.clear();
+        while (std::cin.get() != '\n') ;
+        std::cout << std::endl; // empty line for better display in command window
+    }
     
+    return category;
 }
 
 int main(){
@@ -207,8 +244,9 @@ int main(){
             transaction_acc = accounts_vector.at(codename_index_map[payment_acc_codename]).Name;
 
             // ask the user for category
-            std::cout << "Enter the category of the transaction: " << std::endl;
-            std::getline(std::cin >> std::ws, category);
+            category = get_transaction_category(categories_total_map);
+            // add negative amount to current category
+            categories_total_map[category] -= transaction_amount;
         }
 
         else if (transaction_type == "I"){
@@ -246,6 +284,11 @@ int main(){
 
             // get the account name involved in transaction
             transaction_acc = accounts_vector.at(codename_index_map[payment_acc_codename]).Name;
+
+            // ask the user for category
+            category = get_transaction_category(categories_total_map);
+            // add positive amount to current category
+            categories_total_map[category] += transaction_amount;
         }
 
         // ask the user for detail

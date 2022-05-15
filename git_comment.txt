@@ -1,7 +1,5 @@
-continue process_transaction, utils cleaned
+add new category logic implemented
 
--complete category input codes in process transaction: line 27
--add category into expense and income input
 -test read and write transaction records csv
 -complete write monthly category csv
 -idea to show yearly overview at best
