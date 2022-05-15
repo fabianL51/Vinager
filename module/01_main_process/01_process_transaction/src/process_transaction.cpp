@@ -5,10 +5,35 @@
 /* the transaction histories will be saved in a separate excel data for documentation. */
 
 
+std::string get_transaction_category(std::map <std::string, double> categories_total_map){
+    /* get the user input for the current transaction category */
+
+    // initialize variables
+    int index = 1;
+
+    // create index to category map
+    std::map <int, std::string> index_category_map;
+    
+    // iterate over all current categories
+    for (auto const& map_member:categories_total_map){
+        // display all possible categories to be chosen
+        std::cout << index << ": " << map_member.first << std::endl;
+        // add map member
+        index_category_map[index] = map_member.first;
+        index += 1;
+    }
+
+    // display option to add new category
+    std::cout << index << ": Add a new category" << std::endl;
+    
+}
+
 int main(){
 
     // initialize fstream for transaction and overview csvs
     std::fstream transaction_records_csv, monthly_records_csv, main_overview_csv;
+    // initialize delimiter
+    char delimiter = GlobalData::csv_config::delimiter;
 
     // get vectors of accounts, wealth classes, and asset types total from csv file
     std::vector <Account> accounts_vector = get_accounts_vector();
@@ -18,8 +43,17 @@ int main(){
     // get categories from csv file
     std::map <std::string, double> categories_total_map = get_string_double_map("category");
 
+    // get last transaction id from csv file
+    int last_transaction_id = get_last_transaction_process_id();
+
     // get maps between account names and their codenames
     std::map <std::string, int> codename_index_map = map_codename_to_index(accounts_vector);
+
+    // create transaction type map
+    std::map <std::string, std::string> transaction_type_map;
+    transaction_type_map["T"] = "Interaccount";
+    transaction_type_map["E"] = "Expense";
+    transaction_type_map["I"] = "Income";
     
     // display all accounts
     std::cout << "------------- Current accounts balance ----------" << std::endl;
@@ -53,9 +87,15 @@ int main(){
     // maximum possible money in the transaction
     double MaxGiverMoney, MaxPayableAmount;
 
+    // open transaction records to write by append
+    transaction_records_csv.open(GlobalData::FileNames::transaction_records_csv, std::ios::app);
 
     // loop
     while (input == true){
+
+        // update transaction id
+        transaction_id += 1;
+
         // ask the user which transactions should be processed
         valid_transaction_type = false; // set valid transaction to false
         transaction_type.clear(); // clear transaction type
@@ -125,6 +165,9 @@ int main(){
             // update balance of giver and receiver accounts
             accounts_vector.at(codename_index_map[giver_acc_codename]).Balance -= transaction_amount;
             accounts_vector.at(codename_index_map[receiver_acc_codename]).Balance += transaction_amount;
+
+            // category = Interaccount
+            category = transaction_type_map[transaction_type];
         }
         else if (transaction_type == "E"){
             /* EXPENSES */
@@ -162,6 +205,10 @@ int main(){
             }
             // get the account name involved in transaction
             transaction_acc = accounts_vector.at(codename_index_map[payment_acc_codename]).Name;
+
+            // ask the user for category
+            std::cout << "Enter the category of the transaction: " << std::endl;
+            std::getline(std::cin >> std::ws, category);
         }
 
         else if (transaction_type == "I"){
@@ -202,8 +249,27 @@ int main(){
         }
 
         // ask the user for detail
-        std::cout << "Enter the detail of the transaction which will be used as transaction ID " << std::endl;
+        std::cout << "Enter the detail of the transaction: " << std::endl;
         std::getline(std::cin >> std::ws, transaction_detail);
 
-    }    
+        // write in format: id, type, amount, category, account, detail
+        transaction_records_csv << transaction_id << delimiter << transaction_type_map[transaction_type] << delimiter << transaction_amount 
+            << category << delimiter << transaction_acc << delimiter << transaction_detail;
+        // write: all accounts name with their balance after the transaction
+        for (auto account:accounts_vector){
+            transaction_records_csv << delimiter << account.Name << delimiter << account.Balance;
+        }
+        transaction_records_csv << "\n";
+
+    }  
+
+    // close transaction records
+    transaction_records_csv.close();
+
+    // write monthly categories: rewrite all
+    monthly_records_csv.open(GlobalData::FileNames::monthly_categories_csv, std::ios::out);
+    for (auto const& map_member:categories_total_map){
+
+    }
+
 }

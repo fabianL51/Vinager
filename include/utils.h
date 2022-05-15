@@ -240,6 +240,69 @@ std::map <std::string, double> get_string_double_map(std::string which_data){
     
 }
 
+int get_last_transaction_process_id(){
+
+    /* this function read csv for wealth classes and return a vector of WealthClass class */
+
+
+    // initialize variables
+    std::fstream transaction_process_fstream;
+    std::string line, word; // strings to get a whole line or a word in a line
+    std::string transaction_id_str; // string to store the information of transaction id 
+    int last_transaction_id; // last transaction id to be returned
+    char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
+    int index; // index for storing the right information into right data
+
+    // open csv
+    transaction_process_fstream.open(GlobalData::FileNames::transaction_records_csv, std::ios::in);
+
+    if (transaction_process_fstream.is_open()) {
+
+        std::cout << "Searching the last last transaction's ID" << std::endl;
+
+        // read csv
+        while (std::getline(transaction_process_fstream, line)){
+            
+            // get stringstream from line
+            std::stringstream ss(line);
+
+            // set index for storing the right information into right data
+            index = 1;
+            
+            // store the value into tempWealthClass
+            while (std::getline(ss, word, delimiter)){
+                switch (index)
+                {
+                case 1: // index 1 = wealth class name
+                    transaction_id_str = word;
+                    break;
+
+                default:
+                    break;
+                }
+
+                // add index by one
+                index += 1;
+            }
+        }
+
+        // convert last id to integer
+        last_transaction_id = std::stoi(transaction_id_str.substr(1, transaction_id_str.length() - 1));
+
+        // close csv
+        transaction_process_fstream.close();
+    }
+    else {
+        // first time? ;)
+        last_transaction_id = 0;
+    }
+
+    std::cout << "Last transaction ID is " << last_transaction_id << std::endl;
+
+    // return account vector
+    return last_transaction_id;
+}
+
 std::map <std::string, int> map_codename_to_index(std::vector <Account> accounts_vector){
 
     /* This function maps codename to index in current vectors */

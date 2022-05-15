@@ -1,6 +1,7 @@
 continue process_transaction, utils cleaned
 
--transaction id in case no csv available for transaction records
--read csv for transaction records
--input to all historys csvs: use std::ios::app for yearly
--eventually read historys csvs at the beginning for initialization
+-complete category input codes in process transaction: line 27
+-add category into expense and income input
+-test read and write transaction records csv
+-complete write monthly category csv
+-idea to show yearly overview at best
