@@ -1,5 +1,5 @@
-add new category logic implemented
+input for process transaction works
 
--test read and write transaction records csv
--complete write monthly category csv
+-transaction records: account balance not updated
+-write updated wealth asset and accounts
 -idea to show yearly overview at best

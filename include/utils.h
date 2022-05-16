@@ -286,9 +286,16 @@ int get_last_transaction_process_id(){
             }
         }
 
-        // convert last id to integer
-        last_transaction_id = std::stoi(transaction_id_str.substr(1, transaction_id_str.length() - 1));
-
+        // if transaction id is not empty
+        if (transaction_id_str.length() > 0){
+            // convert last id to integer
+            last_transaction_id = std::stoi(transaction_id_str.substr(1, transaction_id_str.length() - 1));
+        }
+        else {
+            // set to zero if empty
+            last_transaction_id = 0;
+        }
+        
         // close csv
         transaction_process_fstream.close();
     }

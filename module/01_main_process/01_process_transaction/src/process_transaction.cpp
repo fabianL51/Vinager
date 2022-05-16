@@ -35,18 +35,7 @@ std::string get_transaction_category(std::map <std::string, double> categories_t
         if (std::cin >> category_index){
             // check if user's input is valid: either the index exist in category map or it is the last index to add a new category
             valid_category = index_category_map.count(category_index) > 0 or category_index == index;
-            if (valid_category == true){
-                if (category_index == index){
-                    // add a new category
-                    std::cout << "Insert the name of the new category: ";
-                    std::getline(std::cin >> std::ws, category);
-                }
-                else {
-                     // set category from map
-                    category = index_category_map[category_index];
-                }
-            }
-            else {
+            if (valid_category == false){
                 // redisplay possible choice
                 for (auto const& map_member:index_category_map){
                     // display all possible categories to be chosen
@@ -60,6 +49,16 @@ std::string get_transaction_category(std::map <std::string, double> categories_t
         std::cin.clear();
         while (std::cin.get() != '\n') ;
         std::cout << std::endl; // empty line for better display in command window
+    }
+
+    if (category_index == index){
+        // add a new category
+        std::cout << "Insert the name of the new category: ";
+        std::getline(std::cin, category);
+    }
+    else {
+            // set category from map
+        category = index_category_map[category_index];
     }
     
     return category;
@@ -81,7 +80,7 @@ int main(){
     std::map <std::string, double> categories_total_map = get_string_double_map("category");
 
     // get last transaction id from csv file
-    int last_transaction_id = get_last_transaction_process_id();
+    int transaction_id = get_last_transaction_process_id();
 
     // get maps between account names and their codenames
     std::map <std::string, int> codename_index_map = map_codename_to_index(accounts_vector);
@@ -111,7 +110,6 @@ int main(){
 
     // initialize variables for transaction records
     double transaction_amount; // transaction_amount
-    int transaction_id; // id that represent current transaction
     std::string category, transaction_acc, transaction_detail; // Category and transaction accounts, transaction detail
 
     // initialize codenames for all possible transactions
@@ -245,6 +243,10 @@ int main(){
 
             // ask the user for category
             category = get_transaction_category(categories_total_map);
+            // in case of a new category: initialize with zero
+            if (categories_total_map.count(category) == 0){
+                categories_total_map[category] = 0;
+            }
             // add negative amount to current category
             categories_total_map[category] -= transaction_amount;
         }
@@ -287,6 +289,10 @@ int main(){
 
             // ask the user for category
             category = get_transaction_category(categories_total_map);
+            // in case of a new category: initialize with zero
+            if (categories_total_map.count(category) == 0){
+                categories_total_map[category] = 0;
+            }
             // add positive amount to current category
             categories_total_map[category] += transaction_amount;
         }
@@ -296,14 +302,23 @@ int main(){
         std::getline(std::cin >> std::ws, transaction_detail);
 
         // write in format: id, type, amount, category, account, detail
-        transaction_records_csv << transaction_id << delimiter << transaction_type_map[transaction_type] << delimiter << transaction_amount 
-            << category << delimiter << transaction_acc << delimiter << transaction_detail;
+        transaction_records_csv << ("#" + std::to_string(transaction_id)) << delimiter << transaction_type_map[transaction_type] << delimiter << transaction_amount 
+            << delimiter << category << delimiter << transaction_acc << delimiter << transaction_detail;
         // write: all accounts name with their balance after the transaction
         for (auto account:accounts_vector){
             transaction_records_csv << delimiter << account.Name << delimiter << account.Balance;
         }
         transaction_records_csv << "\n";
 
+        // ask user if they want to input another transaction
+        std::cout << "------------TRANSACTION #" << transaction_id << " PROCESSED--------------" << std::endl;
+        std::cout << "Press 1 to input another transaction or any other key to end" << std::endl;
+        // store user input in an integer
+        int next_input;
+        std::cin >> next_input;
+        // reinput is next input is equal one
+        input = next_input == 1;
+        
     }  
 
     // close transaction records
@@ -312,7 +327,7 @@ int main(){
     // write monthly categories: rewrite all
     monthly_records_csv.open(GlobalData::FileNames::monthly_categories_csv, std::ios::out);
     for (auto const& map_member:categories_total_map){
-
+        monthly_records_csv << map_member.first << delimiter << map_member.second << "\n";
     }
-
+    
 }

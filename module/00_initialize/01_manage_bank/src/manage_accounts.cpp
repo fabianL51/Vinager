@@ -23,24 +23,12 @@ int main(){
     if (file_exists(GlobalData::FileNames::accounts_csv)){
         std::cout << "Initialized Accounts are found" << std::endl;
         // ask user whether he wants reset accounts or not
-        std::string reset;
+        int reset;
         std::cout << "Press 1 to reset accounts and any other keys to manage created accounts ";
         std::cin >> reset;
-
-        
-        // overwrite init_accounts bool if user wish to reinitialize account
-        try
-        {
-            // try if reset can be converted into integer
-            init_accounts = std::stoi(reset) == 1;
-        }
-        catch (std::exception& e)
-        {
-            // do nothing as init_accounts = 0 per default and this is also the case if non integer keys are given
-        }
+        // reset account if user input key 1, otherwise manage accounts
+        init_accounts = reset == 1;
     }
-
-    
 
     if (init_accounts == true) {
         /* initialize account */
