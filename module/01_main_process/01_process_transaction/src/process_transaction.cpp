@@ -67,14 +67,14 @@ std::string get_transaction_category(std::map <std::string, double> categories_t
 int main(){
 
     // initialize fstream for transaction and overview csvs
-    std::fstream transaction_records_csv, monthly_records_csv, main_overview_csv;
+    std::fstream transaction_records_csv, monthly_records_csv, main_overview_csv, accounts_csv, asset_type_csv, wealth_class_csv;
     // initialize delimiter
     char delimiter = GlobalData::csv_config::delimiter;
 
     // get vectors of accounts, wealth classes, and asset types total from csv file
     std::vector <Account> accounts_vector = get_accounts_vector();
     std::vector <WealthClass> wealth_classes_vector = get_wealth_classes_vector();
-    std::map <std::string, double> asset_type_map = get_string_double_map("asset_type");
+    // std::map <std::string, double> asset_type_map = get_string_double_map("asset_type"); // currently not needed
 
     // get categories from csv file
     std::map <std::string, double> categories_total_map = get_string_double_map("category");
@@ -241,6 +241,9 @@ int main(){
             // get the account name involved in transaction
             transaction_acc = accounts_vector.at(codename_index_map[payment_acc_codename]).Name;
 
+            // update balance of account involved in transaction
+            accounts_vector.at(codename_index_map[payment_acc_codename]).Balance -= transaction_amount;
+
             // ask the user for category
             category = get_transaction_category(categories_total_map);
             // in case of a new category: initialize with zero
@@ -287,6 +290,9 @@ int main(){
             // get the account name involved in transaction
             transaction_acc = accounts_vector.at(codename_index_map[payment_acc_codename]).Name;
 
+            // update balance of account involved in transaction
+            accounts_vector.at(codename_index_map[payment_acc_codename]).Balance += transaction_amount;
+
             // ask the user for category
             category = get_transaction_category(categories_total_map);
             // in case of a new category: initialize with zero
@@ -318,6 +324,11 @@ int main(){
         std::cin >> next_input;
         // reinput is next input is equal one
         input = next_input == 1;
+
+        // clear the input
+        std::cin.clear();
+        while (std::cin.get() != '\n') ;
+        std::cout << std::endl; // empty line for better display in command window 
         
     }  
 
@@ -329,5 +340,48 @@ int main(){
     for (auto const& map_member:categories_total_map){
         monthly_records_csv << map_member.first << delimiter << map_member.second << "\n";
     }
+    // close monthly records csv
+    monthly_records_csv.close();
+
+    // update accounts csv data: rewrite
+    accounts_csv.open(GlobalData::FileNames::accounts_csv, std::ios::out);
+    // initialize asset type map: both asset balance is equal zero
+    std::map <std::string, double> asset_type_map;
+    asset_type_map["Liquid"] = 0;
+    asset_type_map["Fixed"] = 0;
+    for (auto tempAccount: accounts_vector){
+        // write account data in csv
+        accounts_csv << tempAccount.Name << delimiter << tempAccount.CodeName << delimiter << tempAccount.AssetType << 
+            delimiter << tempAccount.Balance << "\n"; 
+        // update the balance of each asset type
+        asset_type_map[tempAccount.AssetType] += tempAccount.Balance;
+    }
+    // close accounts csv
+    accounts_csv.close();
+
+    // update asset type csv data: rewrite
+    asset_type_csv.open(GlobalData::FileNames::asset_type_csv, std::ios::out);
+    for (auto const& map_member:asset_type_map){
+        asset_type_csv << map_member.first << delimiter << map_member.second << "\n";
+    }
+    // close asset type csv
+    asset_type_csv.close();
+
+    // update wealth class csv: rewrite
+    wealth_class_csv.open(GlobalData::FileNames::wealth_classes_csv, std::ios::out);
+    for (auto tempWealthClass:wealth_classes_vector){
+        if (tempWealthClass.Name.find("Fixed") != std::string::npos){
+            // fixed asset sum = 100%
+            tempWealthClass.Sum = asset_type_map["Fixed"];
+        }
+        else{
+            // liquid asset sum: use percentage allocation
+            tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * asset_type_map["Liquid"];
+        }
+        // write csv
+        wealth_class_csv << tempWealthClass.Name <<  delimiter << tempWealthClass.PercentAllocation << delimiter << tempWealthClass.Sum << "\n"; 
+    }
+    // close wealth class csv
+    wealth_class_csv.close();
     
 }

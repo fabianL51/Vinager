@@ -1,5 +1,4 @@
-input for process transaction works
+process transaction finished
 
--transaction records: account balance not updated
--write updated wealth asset and accounts
--idea to show yearly overview at best
+-all csv updates completed
+-next: idea to show yearly overview at best
