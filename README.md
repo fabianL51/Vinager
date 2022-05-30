@@ -1,6 +1,8 @@
 Vinager
 
-MSYS2 packages needed to run:
-cmake, gcc, ninja
+This is a rewrite of Diskcounter in C++ in order to accelerate the processing speeds of the financial manager.
 
-Always clean the build directory before running cmake.. && cmake --build for the first time
+
+TO DO:
+-add date to transaction records
+-see git comment
