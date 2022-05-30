@@ -1,7 +1,8 @@
 #include "Account.h" // for handling Banks classes
 #include "utils.h" // utilities functions
 
-/* this script processes and categorizes transaction into incomes and expenses. */
+/* this script processes an overview for current month based on category
+process and categorizes transaction into incomes and expenses. */
 /* the transaction histories will be saved in a separate excel data for documentation. */
 
 
@@ -352,7 +353,7 @@ int main(){
     for (auto tempAccount: accounts_vector){
         // write account data in csv
         accounts_csv << tempAccount.Name << delimiter << tempAccount.CodeName << delimiter << tempAccount.AssetType << 
-            delimiter << tempAccount.StartBalance << delimiter << tempAccount.Balance << "\n"; 
+            delimiter << tempAccount.Balance << "\n"; 
         // update the balance of each asset type
         asset_type_map[tempAccount.AssetType] += tempAccount.Balance;
     }
@@ -379,8 +380,7 @@ int main(){
             tempWealthClass.Sum = (tempWealthClass.PercentAllocation / 100.0 ) * asset_type_map["Liquid"];
         }
         // write csv
-        wealth_class_csv << tempWealthClass.Name <<  delimiter << tempWealthClass.PercentAllocation 
-            << delimiter << tempWealthClass.StartSum << delimiter << tempWealthClass.Sum << "\n"; 
+        wealth_class_csv << tempWealthClass.Name <<  delimiter << tempWealthClass.PercentAllocation << delimiter << tempWealthClass.Sum << "\n"; 
     }
     // close wealth class csv
     wealth_class_csv.close();

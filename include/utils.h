@@ -78,7 +78,11 @@ std::vector <Account> get_accounts_vector(){
                     tempAccount.AssetType = word; 
                     break;
 
-                case 4: // index 4 = balance
+                case 4: // index 4 = starting balance
+                    tempAccount.StartBalance = std::stod(word); 
+                    break;
+                
+                case 5: // index 5 = balance
                     tempAccount.Balance = std::stod(word); 
                     break;
                 }
@@ -142,7 +146,11 @@ std::vector <WealthClass> get_wealth_classes_vector(){
                     tempWealthClass.PercentAllocation = std::stod(word); 
                     break;
 
-                case 3: // index 3 = wealth class sum
+                case 3: // index 3 = wealth class start sum
+                    tempWealthClass.StartSum = std::stod(word); 
+                    break;
+
+                case 4: // index 4 = wealth class sum
                     tempWealthClass.Sum = std::stod(word); 
                     break;
                 }

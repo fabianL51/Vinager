@@ -1,7 +1,4 @@
-#1,Interaccount,250,Interaccount,Penumbra to Veck,Test Interaccount Transfer,Penumbra,250,Veck,600
-#2,Income,250,Test Income,Penumbra,Test Income 1,Penumbra,500,Veck,600
-#3,Expense,300,Test Expense,Veck,Test Expense 1,Penumbra,500,Veck,300
-#4,Expense,250,Test Expense,Penumbra,Test Expense 2,Penumbra,250,Veck,300
-#5,Income,150,Test Expense,Veck,Reduced Expenses Test,Penumbra,500,Veck,500
-#6,Interaccount,150,Interaccount,Veck to Penumbra,Test Interaccount 2,Penumbra,650,Veck,350
-#7,Income,150,Test Income,Penumbra,Test Income,Penumbra,650,Veck,350
+#1,Income,750,Wage,Sharown,Bonus,Meridian,5000,Sharown,3250,Percoginia,1000
+#2,Expense,500,Rent,Meridian,Rent May 2022,Meridian,4500,Sharown,3250,Percoginia,1000
+#3,Interaccount,350,Interaccount,Sharown to Percoginia,Liquidation,Meridian,4500,Sharown,2900,Percoginia,1350
+#4,Income,1500,Wage,Meridian,Main Wage,Meridian,6000,Sharown,2900,Percoginia,1350

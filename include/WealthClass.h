@@ -11,9 +11,11 @@ class WealthClass{
             Name.clear();
             PercentAllocation = 0;
             Sum = 0;
+            StartSum = 0;
         }
 
         std::string Name;
         double Sum = 0;
+        double StartSum = 0;
         double PercentAllocation;
 };

@@ -131,9 +131,9 @@ int main(){
             // add tempAccount to accounts vector
             accounts_vector.emplace_back(tempAccount);
 
-            // write to csv
+            // write to csv: start balance is equal to balance
             accounts_csv_file << tempAccount.Name << delimiter << tempAccount.CodeName << delimiter << tempAccount.AssetType << 
-                delimiter << tempAccount.Balance << "\n"; 
+                delimiter << tempAccount.Balance << delimiter << tempAccount.Balance << "\n"; 
 
             // clear tempAccount for next account
             tempAccount.clear();

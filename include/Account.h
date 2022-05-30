@@ -15,10 +15,12 @@ class Account{
             AssetType.clear();
             CodeName.clear();
             Balance = 0;
+            StartBalance = 0;
         }
 
         std::string Name;
         double Balance;
+        double StartBalance;
         std::string AssetType;
         std::string CodeName;
 };
