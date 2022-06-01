@@ -1,6 +1,0 @@
-adding starting balance and sums for accounts and wealth classes
-
--added reallocation feature in manage_wealth
--continue build process_overview
--next idea: handling of recurring expenses and incomes
--next idea: change category name
