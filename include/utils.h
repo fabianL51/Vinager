@@ -9,6 +9,7 @@
 #include <vector> // for vector
 #include <string> // string handles
 #include <map> // for mapping
+#include <ctime> // to get date and time
 #pragma once // prevent errors when some libraries are called in another scripts
 
 inline bool file_exists (const std::string& name) {
@@ -331,4 +332,190 @@ std::map <std::string, int> map_codename_to_index(std::vector <Account> accounts
 
     return codename_index_map;
 
+}
+
+int get_date_info(std::string what_info){
+
+    /* This function returns full or part of current date */
+
+    // initialize return variable
+    int date_info;
+
+    // current date/time based on current system
+    time_t now = time(0);
+
+    tm *ltm = localtime(&now);
+
+    if (what_info == "year"){
+       // get current year
+        date_info = 1900 + ltm->tm_year;
+    }
+    else if(what_info == "month"){
+        // get current month
+        date_info = 1 + ltm->tm_mon;
+    }
+    else if(what_info == "day"){
+        // get current date
+        date_info = ltm->tm_mday;
+    }
+
+    return date_info;
+}
+
+std::string get_current_date (int day, int month, int year, std::string format){
+
+    /* This function build a date based on given format */
+    
+    // initialize variables
+    std::string date, str_day, str_month;
+
+    // apply conversion logic for day and month
+    if (day < 10){
+        str_day = "0" + std::to_string(day);
+    }
+    else {
+        str_day = std::to_string(day);
+    }
+    if (month < 10){
+        str_month = "0" + std::to_string(month);
+    }
+    else {
+        str_month = std::to_string(month);
+    }
+
+    if (format == "dd.mm.yyyy"){
+        date = str_day + "." + str_month + "." + std::to_string(year);
+    }
+    else if (format == "dd/mm/yyyy"){
+        date = str_day + "/" + str_month + "/" + std::to_string(year);
+    }
+
+    return date;
+}
+
+std::string get_string_month(int month){
+
+    /* This function translate integer month to string */
+
+    // create map
+    std::string month_str;
+
+    switch (month)
+    {
+    case 1:
+        month_str = "January";
+        break;
+    
+    case 2:
+        month_str = "February";
+        break;
+    
+    case 3:
+        month_str = "March";
+        break;
+    
+    case 4:
+        month_str = "April";
+        break;
+    
+    case 5:
+        month_str = "May";
+        break;
+    
+    case 6:
+        month_str = "June";
+        break;
+    
+    case 7:
+        month_str = "July";
+        break;
+    
+    case 8:
+        month_str = "August";
+        break;
+    
+    case 9:
+        month_str = "September";
+        break;
+    
+    case 10:
+        month_str = "October";
+        break;
+    
+    case 11:
+        month_str = "November";
+        break;
+    
+    case 12:
+        month_str = "December";
+        break;
+    
+    default:
+        break;
+    }
+
+    return month_str;
+}
+std::map <int, std::string> month_int_to_string(int month){
+
+    /* This function creates map that translate integer month to string */
+
+    // create map
+    std::map <int, std::string> month_int_to_str_map;
+
+    switch (month)
+    {
+    case 1:
+        month_int_to_str_map[month] = "January";
+        break;
+    
+    case 2:
+        month_int_to_str_map[month] = "February";
+        break;
+    
+    case 3:
+        month_int_to_str_map[month] = "March";
+        break;
+    
+    case 4:
+        month_int_to_str_map[month] = "April";
+        break;
+    
+    case 5:
+        month_int_to_str_map[month] = "May";
+        break;
+    
+    case 6:
+        month_int_to_str_map[month] = "June";
+        break;
+    
+    case 7:
+        month_int_to_str_map[month] = "July";
+        break;
+    
+    case 8:
+        month_int_to_str_map[month] = "August";
+        break;
+    
+    case 9:
+        month_int_to_str_map[month] = "September";
+        break;
+    
+    case 10:
+        month_int_to_str_map[month] = "October";
+        break;
+    
+    case 11:
+        month_int_to_str_map[month] = "November";
+        break;
+    
+    case 12:
+        month_int_to_str_map[month] = "December";
+        break;
+    
+    default:
+        break;
+    }
+
+    return month_int_to_str_map;
 }

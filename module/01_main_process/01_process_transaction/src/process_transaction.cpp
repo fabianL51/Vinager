@@ -67,7 +67,7 @@ std::string get_transaction_category(std::map <std::string, double> categories_t
 int main(){
 
     // initialize fstream for transaction and overview csvs
-    std::fstream transaction_records_csv, monthly_records_csv, main_overview_csv, accounts_csv, asset_type_csv, wealth_class_csv;
+    std::fstream transaction_records_csv, monthly_records_csv, accounts_csv, asset_type_csv, wealth_class_csv;
     // initialize delimiter
     char delimiter = GlobalData::csv_config::delimiter;
 
@@ -94,7 +94,7 @@ int main(){
     // display all accounts
     std::cout << "------------- Current accounts balance ----------" << std::endl;
     for (auto Account: accounts_vector){
-        std::cout << Account.Name << "(" << Account.CodeName << ") : " << Account.Balance << std::endl;
+        std::cout << Account.Name << "(" << Account.CodeName << ") - " << Account.AssetType << ": " << Account.Balance << std::endl;
     }
 
     // display all wealth class
@@ -117,6 +117,7 @@ int main(){
 
     // initialize variables to process transaction
     std::string transaction_type; // to store transaction type
+    std::string date_today; // to store date for transaction records
     // all booleans for validity checks
     bool valid_payment_acc, valid_transaction_type, valid_giver_acc, valid_receiver_acc, valid_money;
     // maximum possible money in the transaction
@@ -307,9 +308,12 @@ int main(){
         std::cout << "Enter the detail of the transaction: " << std::endl;
         std::getline(std::cin >> std::ws, transaction_detail);
 
+        // get current date
+        std::string date_today = get_current_date(get_date_info("day"), get_date_info("month"), get_date_info("year"), "dd/mm/yyyy");
+
         // write in format: id, type, amount, category, account, detail
-        transaction_records_csv << ("#" + std::to_string(transaction_id)) << delimiter << transaction_type_map[transaction_type] << delimiter << transaction_amount 
-            << delimiter << category << delimiter << transaction_acc << delimiter << transaction_detail;
+        transaction_records_csv << ("#" + std::to_string(transaction_id)) << delimiter << date_today << delimiter << transaction_type_map[transaction_type] 
+            << delimiter << transaction_amount << delimiter << category << delimiter << transaction_acc << delimiter << transaction_detail;
         // write: all accounts name with their balance after the transaction
         for (auto account:accounts_vector){
             transaction_records_csv << delimiter << account.Name << delimiter << account.Balance;

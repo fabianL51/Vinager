@@ -1,8 +1,6 @@
 adding starting balance and sums for accounts and wealth classes
 
--add reallocation feature in manage_wealth
--continue process overview: display in command prompt
--current idea: read accounts and wealth class csvs to get cash flows
--current idea: csv for every month and every year: read to display
+-added reallocation feature in manage_wealth
+-continue build process_overview
 -next idea: handling of recurring expenses and incomes
 -next idea: change category name
