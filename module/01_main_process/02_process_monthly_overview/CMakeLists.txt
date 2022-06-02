@@ -13,7 +13,7 @@ add_executable(${ProjectId}
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "process_overview")
+    OUTPUT_NAME "process_monthly_overview")
 
 
 # get main Path
