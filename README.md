@@ -1,6 +1,6 @@
 # Vinager
 
-Vinager is a simple financial manager that handles daily transactions data to give users a good overview over incomes and expenses. Users only need to enter the transaction details and the program deals with the bookkeeping and recurring incomes and expenses. This program based on a financial manager named Diskcounter (https://github.com/fabianL51/Diskcounter) that I developed using VBA. The use of C++ in Vinager is meant to accelerate the processing speeds of the transaction datas compared to Diskcounter. Moreover, users can use Vinager without needing to have Microsoft Excel (as Diskcounter only works in Microsoft Excel).
+Vinager is a simple financial manager that handles daily transactions data to give users a good overview over incomes and expenses. Users only need to enter the transaction details and the program deals with the bookkeeping and recurring incomes and expenses. This program based on a financial manager named Diskcounter (https://github.com/fabianL51/Diskcounter) that I developed using VBA. The use of C++ in Vinager is meant to accelerate the processing speed of the transaction data compared to Diskcounter. Moreover, users can use Vinager without needing to have Microsoft Excel (as Diskcounter only works in Microsoft Excel).
 
 This is currently still under development. At this stage, processes can only be run through the terminals in Linux. The goal is to integrate a user interface (probably through Qt) to run the program. 
 
