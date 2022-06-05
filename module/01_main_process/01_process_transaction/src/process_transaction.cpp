@@ -349,7 +349,7 @@ int main(){
 
     // update accounts csv data: rewrite
     accounts_csv.open(GlobalData::FileNames::accounts_csv, std::ios::out);
-    // initialize asset type map: both asset balance is equal zero
+    // initialize map to store asset type balance
     std::map <std::string, double> asset_type_map;
     asset_type_map["Liquid"] = 0;
     asset_type_map["Fixed"] = 0;
@@ -366,7 +366,7 @@ int main(){
     // update asset type csv data: rewrite
     asset_type_csv.open(GlobalData::FileNames::asset_type_csv, std::ios::out);
     for (auto const& map_member:asset_type_map){
-        asset_type_csv << map_member.first << delimiter << map_member.second << "\n";
+        asset_type_csv << map_member.first << delimiter << map_member.second << delimiter << map_member.second << "\n";
     }
     // close asset type csv
     asset_type_csv.close();

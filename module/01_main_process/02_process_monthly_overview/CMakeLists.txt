@@ -7,7 +7,7 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId}
-  src/process_transaction.cpp
+  src/process_monthly_overview.cpp
 )
 
 # executable name
