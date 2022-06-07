@@ -1,7 +1,8 @@
 # To Do List:
 
-1. Recurring expenses and incomes
-2. Function to change category name
-3. Structure for compiled executables
-3. Implement manage accounts
-4. Run program through Qt
+- Yearly Overview: Logic to find end line of income and continue with expense, later analogue to get balance changes
+- Recurring expenses and incomes
+- Function to change category name
+- Structure for compiled executables
+- Implement manage accounts
+- Run program through Qt

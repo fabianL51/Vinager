@@ -49,10 +49,11 @@ std::vector <Account> get_accounts_vector(){
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
     int index; // index for storing the right information into right data
 
-    // open csv
-    account_csv_fstream.open(GlobalData::FileNames::accounts_csv, std::ios::in);
-
-    if (account_csv_fstream.is_open()) {
+    // check if csv file exists
+    if (file_exists(GlobalData::FileNames::accounts_csv)) {
+        
+        // open csv
+        account_csv_fstream.open(GlobalData::FileNames::accounts_csv, std::ios::in);
 
         // read csv
         while (std::getline(account_csv_fstream, line)){
@@ -121,10 +122,11 @@ std::vector <WealthClass> get_wealth_classes_vector(){
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
     int index; // index for storing the right information into right data
 
-    // open csv
-    wealth_class_csv_fstream.open(GlobalData::FileNames::wealth_classes_csv, std::ios::in);
-
-    if (wealth_class_csv_fstream.is_open()) {
+    // check if csv file exists
+    if (file_exists(GlobalData::FileNames::wealth_classes_csv)) {
+        
+        // open csv
+        wealth_class_csv_fstream.open(GlobalData::FileNames::wealth_classes_csv, std::ios::in);
 
         // read csv
         while (std::getline(wealth_class_csv_fstream, line)){
@@ -198,10 +200,11 @@ std::map <std::string, double> get_string_double_map(std::string which_data){
         csv_name = GlobalData::FileNames::monthly_categories_csv;
     }
 
-    // open csv
-    csv_fstream.open(csv_name, std::ios::in);
+    // check if csv file exists
+    if (file_exists(csv_name)) {
 
-    if (csv_fstream.is_open()) {
+        // open csv
+        csv_fstream.open(csv_name, std::ios::in);
 
         // read csv
         while (std::getline(csv_fstream, line)){
@@ -262,37 +265,74 @@ int get_last_transaction_process_id(){
     char delimiter = GlobalData::csv_config::delimiter; // set delimiter in csv
     int index; // index for storing the right information into right data
 
-    // open csv
-    transaction_process_fstream.open(GlobalData::FileNames::transaction_records_csv, std::ios::in);
-
-    if (transaction_process_fstream.is_open()) {
+    // check if csv file exists
+    if (file_exists(GlobalData::FileNames::transaction_records_csv)) {
 
         std::cout << "Searching the last last transaction's ID" << std::endl;
 
-        // read csv
-        while (std::getline(transaction_process_fstream, line)){
-            
-            // get stringstream from line
-            std::stringstream ss(line);
+        // open csv
+        transaction_process_fstream.open(GlobalData::FileNames::transaction_records_csv, std::ios::in);
 
-            // set index for storing the right information into right data
-            index = 1;
-            
-            // store the value into tempWealthClass
-            while (std::getline(ss, word, delimiter)){
-                switch (index)
-                {
-                case 1: // index 1 = wealth class name
-                    transaction_id_str = word;
-                    break;
+        // get last line of csv: 
+        /* based on: https://stackoverflow.com/questions/11876290/c-fastest-way-to-read-only-last-line-of-text-file
+        answer by derpface
+        */
 
-                default:
-                    break;
-                }
+        // go to one spot before the EOF: last line is always new line, so look the second least line
+        transaction_process_fstream.seekg(-2, std::ios_base::end);  
 
-                // add index by one
-                index += 1;
+        // initialize bool to decide whether to break the loop
+        bool keepLooping = true;
+        while(keepLooping) {
+            char ch;
+            // Get current byte's data
+            transaction_process_fstream.get(ch);                            
+
+            // If the data was at or before the 0th byte
+            if((int)transaction_process_fstream.tellg() <= 1) {
+                // The first line is the last line             
+                transaction_process_fstream.seekg(0);
+                // break the loop                      
+                keepLooping = false; 
             }
+            // If the data was a newline
+            else if(ch == '\n') {  
+                // Stop at the current position.                 
+                keepLooping = false;                
+            }
+            // If the data was neither a newline nor at the 0 byte
+            else {                          
+                // Move to the front of that data, then to the front of the data before it        
+                transaction_process_fstream.seekg(-2, std::ios_base::cur);        
+            }
+        }
+
+        // get current line
+        std::getline(transaction_process_fstream, line);
+        // get stringstream from line
+        std::stringstream ss(line);
+
+        // set index for storing the right information into right data
+        index = 1;
+        
+        // set a boolean to break loop if transaction id is found
+        bool breakLoop = false;
+        // store the value into tempWealthClass
+        while (std::getline(ss, word, delimiter) and breakLoop == false){
+            switch (index)
+            {
+            case 1: // index 1 = transaction id
+                transaction_id_str = word;
+                // break loop to save computing resources
+                breakLoop = true;
+                break;
+
+            default:
+                break;
+            }
+
+            // add index by one
+            index += 1;
         }
 
         // if transaction id is not empty
