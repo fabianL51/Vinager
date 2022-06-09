@@ -1,6 +1,6 @@
 # To Do List:
 
-- Yearly Overview: Logic to find end line of income and continue with expense, later analogue to get balance changes
+- Yearly Overview: Failure of csv reading of monthly overview
 - Recurring expenses and incomes
 - Function to change category name
 - Structure for compiled executables
