@@ -1,0 +1,4 @@
+monthly overview reading failed
+
+-use cout to troubleshooting: starting from income:
+-cleaner method to check whether file exist through stat instead of is.open
