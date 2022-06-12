@@ -1,6 +1,35 @@
 YEARLY OVERVIEW FOR 2022
 --------------------------------
 
-Time Span:,January,February,March,April,May,June,July,August,September,October,November,DecemberTOTAL
+INCOME
 --------------------------------
+Category,January,February,March,April,May,June,July,August,September,October,November,December,TOTAL
+Stock Market,0,0,0,0,0,500,0,0,0,0,0,0,500
+Wage,0,0,0,0,0,2250,0,0,0,0,0,0,2250
 
+EXPENSE
+--------------------------------
+Category,January,February,March,April,May,June,July,August,September,October,November,December,TOTAL
+Fun,0,0,0,0,0,-250,0,0,0,0,0,0,-250
+Rent,0,0,0,0,0,-500,0,0,0,0,0,0,-500
+
+CHANGE IN ACCOUNT BALANCE
+--------------------------------
+Account,January,February,March,April,May,June,July,August,September,October,November,December,TOTAL
+Meridian,0,0,0,0,0,1250,0,0,0,0,0,0,1250
+Percoginia,0,0,0,0,0,350,0,0,0,0,0,0,350
+Sharown,0,0,0,0,0,400,0,0,0,0,0,0,400
+
+CHANGE IN WEALTH CLASS BALANCE
+--------------------------------
+Wealth Class,January,February,March,April,May,June,July,August,September,October,November,December,TOTAL
+Fixed Asset,0,0,0,0,0,400,0,0,0,0,0,0,400
+Gentry,0,0,0,0,0,348,0,0,0,0,0,0,348
+Meladone,0,0,0,0,0,593.6,0,0,0,0,0,0,593.6
+Racleton,0,0,0,0,0,658.4,0,0,0,0,0,0,658.4
+
+CHANGE IN ASSET TYPE BALANCE
+--------------------------------
+Asset Type,January,February,March,April,May,June,July,August,September,October,November,December,TOTAL
+Fixed,0,0,0,0,0,400,0,0,0,0,0,0,400
+Liquid,0,0,0,0,0,1600,0,0,0,0,0,0,1600
