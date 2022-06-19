@@ -1,4 +1,3 @@
-#include "Account.h" // for handling Banks classes
 #include "utils.h" // utilities functions
 #include <algorithm>  // for std::sort
 
@@ -66,6 +65,7 @@ int main(){
     for (auto const& income:income_list){
         current_month_overview_csv << income.first << delimiter << income.second << "\n";
     }
+    current_month_overview_csv << "--------------------------------" << "\n";
 
     // save expenses into csv
     // header for income
@@ -74,6 +74,7 @@ int main(){
     for (auto const& expense:expense_list){
         current_month_overview_csv << expense.first << delimiter << expense.second << "\n";
     }
+    current_month_overview_csv << "--------------------------------" << "\n";
 
     // get change in accounts' balances
     // header
@@ -89,6 +90,7 @@ int main(){
         // get change in asset type
         asset_type_balance_change_map[account.AssetType] += account.Balance - account.StartBalance;
     }
+    current_month_overview_csv << "--------------------------------" << "\n";
 
     // get change in wealth class balances
     // header
@@ -97,6 +99,7 @@ int main(){
     for (auto const wealth_class:wealth_classes_vector){
         current_month_overview_csv << wealth_class.Name << delimiter << wealth_class.Sum - wealth_class.StartSum << "\n";
     }
+    current_month_overview_csv << "--------------------------------" << "\n";
 
     // get change in asset type balances
     // header
@@ -105,6 +108,7 @@ int main(){
     for (auto const& map_member:asset_type_balance_change_map){
         current_month_overview_csv << map_member.first << delimiter << map_member.second << "\n";
     }
+    current_month_overview_csv << "--------------------------------" << "\n";
 
     // close csv
     current_month_overview_csv.close();

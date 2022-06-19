@@ -1,4 +1,3 @@
-#include "Account.h" // for handling Banks classes
 #include "utils.h" // utilities functions
 
 /* this script processes and categorizes transaction into incomes and expenses. */

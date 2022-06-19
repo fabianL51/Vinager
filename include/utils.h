@@ -3,6 +3,7 @@
 #include "Account.h" // for handling Banks classes
 #include "WealthClass.h" // for handling Asset classes
 #include "GlobalData.h" // for global variables in entire project
+#include "RecurringTransaction.h" // for recurring transaction
 #include <fstream> // to handle csv data
 #include <sstream> // to read string in csv
 #include <math.h> // for math

@@ -1,6 +1,6 @@
 # To Do List:
 
-- Recurring expenses and incomes
+- Manage and Delete Recurring transactions
 - Function to change category name
 - Structure for compiled executables
 - Implement manage accounts

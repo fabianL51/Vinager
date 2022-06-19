@@ -7,13 +7,13 @@ project(${ProjectId})
 
 # add executable
 add_executable(${ProjectId}
-  src/process_yearly_overview.cpp
+  src/manage_recurring_transactions.cpp
 )
 
 # executable name
 set_target_properties(${ProjectId}
   PROPERTIES 
-    OUTPUT_NAME "process_yearly_overview")
+    OUTPUT_NAME "manage_recurring_transactions")
 
 
 # get main Path

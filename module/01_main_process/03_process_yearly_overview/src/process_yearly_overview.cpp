@@ -1,4 +1,3 @@
-#include "Account.h" // for handling Banks classes
 #include "utils.h" // utilities functions
 #include <algorithm>  // for std::sort
 
@@ -301,11 +300,44 @@ int main(){
     // unload results
     std::vector <std::map <std::pair <std::string, int>, double>> map_vector = map_vector_pair.first;
     total_map_vector = map_vector_pair.second;
+
+    // get total of total for each data
+    std::vector<double> total_vector(5);
+    for (int i = 0; i < total_map_vector.size(); i++){
+        // iterate each component to get total
+        for (auto const& map_member: total_map_vector.at(i)){
+            total_vector.at(i) += map_member.second;
+        }
+    }
     
     // open or create yearly csv with write permission
     current_year_overview_csv.open(year_overview_filename, std::ios::out);
     // header for current year
-    current_year_overview_csv << "YEARLY OVERVIEW FOR " << std::to_string(get_date_info("year")) << "\n" << "--------------------------------" << "\n";
+    current_year_overview_csv << "YEARLY OVERVIEW FOR " << std::to_string(get_date_info("year")) << "\n" << "-----------------------------------------------------" << "\n";
+    // get all totals
+    std::string total_detail;
+    for (int i = 0; i < total_vector.size(); i++){
+        switch(i){
+            case 0:
+                total_detail = "TOTAL INCOMES ";
+                break;
+            case 1:
+                total_detail = "TOTAL EXPENSES ";
+                break;
+            case 2:
+                total_detail = "TOTAL CHANGE IN ACCOUNT ";
+                break;
+            case 3:
+                total_detail = "TOTAL CHANGE IN WEALTH CLASSES ";
+                break;
+            case 4:
+                total_detail = "TOTAL CHANGE IN ASSET TYPE ";
+                break;
+        }
+        current_year_overview_csv << total_detail << delimiter << total_vector.at(i) << "\n";
+    }
+    current_year_overview_csv << "-----------------------------------------------------" << "\n";
+    
 
     // initialize variables for header details
     std::string header_top, header_down;
@@ -340,7 +372,7 @@ int main(){
 
         }
         // display header data in csv
-        current_year_overview_csv << "\n" << header_top << "\n" << "--------------------------------" << "\n";
+        current_year_overview_csv << "\n" << header_top << "\n" << "-----------------------------------------------------" << "\n";
         current_year_overview_csv << header_down;  
         for (int i = 1; i <= 12; i++){
             current_year_overview_csv << delimiter << get_string_month(i) ;
@@ -360,6 +392,7 @@ int main(){
             // display total 
             current_year_overview_csv << delimiter << map_member.second << "\n";
         }
+        current_year_overview_csv << "-----------------------------------------------------" << "\n";
     }
 
 

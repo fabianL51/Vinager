@@ -12,6 +12,7 @@ namespace GlobalData{
         std::string wealth_classes_csv = "WealthClasses.csv";
         std::string transaction_records_csv = "TransactionRecords.csv";
         std::string monthly_categories_csv = "MonthlyCategories.csv";
+        std::string recurring_csv = "Recurring.csv";
         
     };
 
